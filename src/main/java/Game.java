@@ -55,7 +55,7 @@ public class Game {
   public List<User> getUsers() {
     List<User> users = new ArrayList<>();
     for (Integer userId : this.getUserIds())
-      users.add(User.findById(userId));
+      users.add(User.find(userId));
     return users;
   }
 
@@ -184,13 +184,13 @@ public class Game {
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
-  }
-
-  public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
-  }
+  // public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
+  //
+  // }
 
   /////////////////////////////////////////////////////////////////////////////
   /// database Methods
@@ -220,7 +220,8 @@ public class Game {
     } else {
       Game newGame = (Game) otherGame;
       return this.id == newGame.getId() &&
-             this.playerCount == newGame.getPlayerCount() && this.playerTurn == newGame.getPlayerTurn();
+             this.playerCount == newGame.getPlayerCount() &&
+             this.playerTurn == newGame.getPlayerTurn();
     }
   }
 
