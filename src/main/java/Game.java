@@ -14,7 +14,7 @@ public class Game {
     this.playerTurn = 1;
     this.save();
     for (int i = 0; i < 8; i++) {
-      for(int j = i%2; j < 8; j+=2) {
+      for(int j = (i+1)%2; j < 8; j+=2) {
         if (i <=2) {
           Checker newChecker = new Checker(1, i, j, this.id);
           checkers.add(newChecker);
@@ -89,7 +89,7 @@ public class Game {
       return false;
     } else {
       for (int i = 0; i < 8; i++) {
-        for(int j = (i+1)%2; j < 8; j+=2) {
+        for(int j = i%2; j < 8; j+=2) {
           if (pRowFinish == i && pColFinish == j)
             return false;
         }
@@ -120,7 +120,7 @@ public class Game {
     return true;
   }
 
-  public boolean specificMoveIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
+  public boolean specificMoveIsValid(Checker pChecker, int pRowFinish, int pColFinish) {
     if (!this.isLegalMove(pChecker, pRowFinish, pColFinish))
       return false;
     else if (this.spotIsTaken(pRowFinish, pColFinish) != null)
@@ -128,7 +128,7 @@ public class Game {
     return true;
   }
 
-  public boolean specificCaptureIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
+  public boolean specificCaptureIsValid(Checker pChecker, int pRowFinish, int pColFinish) {
     if (!this.isLegalCapture(pChecker, pRowFinish, pColFinish))
       return false;
     else if (this.spotIsTaken(pRowFinish, pColFinish) != null)
@@ -145,20 +145,20 @@ public class Game {
     return false;
   }
 
-  public boolean generalCaptureIsAvailable(Checker pChecker) {
+  public boolean generalCaptureIsValid(Checker pChecker) {
     for (int i = -2; i <= 2; i+=4) {
       for (int j = -2; j <= 2; j+=4) {
-        if(this.specificCaptureIsAvailable(pChecker, pChecker.getRowPosition()+i, pChecker.getColumnPosition()+j))
+        if(this.specificCaptureIsValid(pChecker, pChecker.getRowPosition()+i, pChecker.getColumnPosition()+j))
           return true;
       }
     }
     return false;
   }
 
-  public boolean generalMoveIsAvailable(Checker pChecker) {
+  public boolean generalMoveIsValid(Checker pChecker) {
     for (int i = -1; i <= 1; i+=2) {
       for (int j = -1; j <= 1; j+=2) {
-        if(this.specificMoveIsAvailable(pChecker, pChecker.getRowPosition()+i, pChecker.getColumnPosition()+j))
+        if(this.specificMoveIsValid(pChecker, pChecker.getRowPosition()+i, pChecker.getColumnPosition()+j))
           return true;
       }
     }
@@ -168,10 +168,10 @@ public class Game {
   public boolean gameIsOver() {
     for(Checker checker : this.checkers) {
       if(checker.getType == this.playerTurn || 2 == Math.abs(checker.getType() - this.playerTurn)) {
-        if (this.generalMoveIsAvailable(checker)) {
+        if (this.generalMoveIsValid(checker)) {
           this.playerTurn = this.playerTurn%2 + 1;
           return false;
-        } else if (this.generalCaptureIsAvailable(checker)) {
+        } else if (this.generalCaptureIsValid(checker)) {
           this.playerTurn = this.playerTurn%2 + 1;
           return false;
         }
@@ -181,19 +181,24 @@ public class Game {
     return true;
   }
 
-
-
-
-
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
   public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
+    if(this.specificMoveIsValid(pChecker, pRowFinish, pColFinish))
+      pChecker.update(pRowFinish, pColFinish);
   }
 
   public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
+    if(this.specificCaptureIsValid(pChecker, pRowFinish, pColFinish)) {
+      int rowSign = pRowFinish - pChecker.getRowPosition();
+      rowSign = rowSign/Math.abs(rowSign);
+      int colSign = pColFinish - pChecker.getColumnPosition();
+      colSign = colSign/Math.abs(colSign);
+      Checker capturableChecker = this.spotIsTaken(pRowFinish + rowSign, pColFinish + colSign);
+      capturableChecker.delete();
+      pChecker.update(pRowFinish, pColFinish);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
