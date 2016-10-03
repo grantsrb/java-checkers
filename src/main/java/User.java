@@ -40,14 +40,14 @@ public class User {
     return this.id;
   }
 
-  public List<Game> getGames() {
-    try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM games WHERE userid = :id";
-      return con.createQuery(sql)
-        .addParameter("id", this.id)
-        .executeAndFetch(Game.class);
-    }
-  }
+  // public List<Game> getGames() {
+  //   try(Connection con = DB.sql2o.open()) {
+  //     String sql = "SELECT * FROM games WHERE userid = :id";
+  //     return con.createQuery(sql)
+  //       .addParameter("id", this.id)
+  //       .executeAndFetch(Game.class);
+  //   }
+  // }
 
   public static User login(String username, String password) {
     try(Connection con = DB.sql2o.open()) {
@@ -75,10 +75,12 @@ public class User {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+      String sql = "INSERT INTO users (username, password, gameswon, gameslost) VALUES (:username, :password, :gameswon, :gameslost)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("username", this.username)
         .addParameter("password", this.password)
+        .addParameter("gameswon", this.gamesWon)
+        .addParameter("gameslost", this.gamesLost)
         .executeUpdate()
         .getKey();
     }
@@ -136,7 +138,7 @@ public class User {
     try(Connection con = DB.sql2o.open()) {
       String sql = "UPDATE users SET gameslost = :gameslost WHERE id = :id";
       con.createQuery(sql)
-        .addParameter("gameslost", this.gameLost)
+        .addParameter("gameslost", this.gamesLost)
         .addParameter("id", this.id)
         .executeUpdate();
     }
