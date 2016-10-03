@@ -55,7 +55,7 @@ public class Game {
   public List<User> getUsers() {
     List<User> users = new ArrayList<>();
     for (Integer userId : this.getUserIds())
-      users.add(User.findById(userId));
+      users.add(User.find(userId));
     return users;
   }
 
@@ -229,7 +229,8 @@ public class Game {
     } else {
       Game newGame = (Game) otherGame;
       return this.id == newGame.getId() &&
-             this.playerCount == newGame.getPlayerCount() && this.playerTurn == newGame.getPlayerTurn();
+             this.playerCount == newGame.getPlayerCount() &&
+             this.playerTurn == newGame.getPlayerTurn();
     }
   }
 

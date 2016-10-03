@@ -136,7 +136,7 @@ public class User {
     try(Connection con = DB.sql2o.open()) {
       String sql = "UPDATE users SET gameslost = :gameslost WHERE id = :id";
       con.createQuery(sql)
-        .addParameter("gameslost", this.gameLost)
+        .addParameter("gameslost", this.gamesLost)
         .addParameter("id", this.id)
         .executeUpdate();
     }
