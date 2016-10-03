@@ -29,9 +29,10 @@ public class Game {
   }
 
   public int getPlayerCount() {
-
+    return this.playerCount;
   }
 
+  // //TODO caleb and sandro
   public List<Integer> getUserIds() {
 
   }
@@ -39,9 +40,25 @@ public class Game {
   public List<User> getUsers() {
 
   }
+  //===
 
   public int[][] getBoard() {
 
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// database managament Methods
+
+  //TODO Compare boards
+  @Override
+  public boolean equals(Object otherGame) {
+    if(!(otherGame instanceof Game)) {
+      return false;
+    } else {
+      Game newGame = (Game) otherGame;
+      return this.id == newGame.getId() &&
+             this.playerCount == newGame.getPlayerCount();
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -67,8 +84,8 @@ public class Game {
 
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  /// gamePlay Methods
+  ///////////////////////////////////////////////////////////////////////////
+  // gamePlay Methods
 
   public void movePiece(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
 
