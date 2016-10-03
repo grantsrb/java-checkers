@@ -33,18 +33,18 @@ public class Game {
   }
 
   // //TODO caleb and sandro
-  public List<Integer> getUserIds() {
-
-  }
-
-  public List<User> getUsers() {
-
-  }
-  //===
-
-  public int[][] getBoard() {
-
-  }
+  // public List<Integer> getUserIds() {
+  //
+  // }
+  //
+  // public List<User> getUsers() {
+  //
+  // }
+  // //===
+  //
+  // public int[][] getBoard() {
+  //
+  // }
 
   /////////////////////////////////////////////////////////////////////////////
   /// database managament Methods
@@ -64,39 +64,39 @@ public class Game {
   /////////////////////////////////////////////////////////////////////////////
   /// validator Methods
 
-  public boolean generalMoveIsAvailable(int pRow, int pCol) {
-
-  }
-
-  public boolean generalCaptureIsAvailable(int pRow, int pCol) {
-
-  }
-
-  public boolean legalMove(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
-
-  }
-
-  public boolean specificMoveIsAvailable(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
-
-  }
-
-  public boolean specificCaptureIsAvailable(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
-
-  }
+  // public boolean generalMoveIsAvailable(int pRow, int pCol) {
+  //
+  // }
+  //
+  // public boolean generalCaptureIsAvailable(int pRow, int pCol) {
+  //
+  // }
+  //
+  // public boolean legalMove(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public boolean specificMoveIsAvailable(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public boolean specificCaptureIsAvailable(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
+  //
+  // }
 
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public void movePiece(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
-
-  }
-
-  public void capturePiece(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
-
-  }
-
-  public void makeKing(int pRow, int pCol) {
-
-  }
+  // public void movePiece(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public void capturePiece(int pRowStart, int pColStart, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public void makeKing(int pRow, int pCol) {
+  //
+  // }
 
 }
