@@ -4,20 +4,22 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Game {
-  private int[][] board = new int [8][8];
   private int playerCount;
+  private int playerTurn;
   private int id;
 
   public Game(int pPlayerCount) {
     this.playerCount = pPlayerCount;
+    this.playerTurn = 1;
+    this.save();
     for (int i = 0; i < 8; i++) {
       for(int j = i%2; j < 8; j+=2) {
         if (i <=2)
-          board[i][j] = 1;
+          Checker newChecker = new Checker(1, i, j, this.id);
         else if (i >= 3 && i <= 4)
-          board[i][j] = 0;
+          Checker newChecker = new Checker(0, i, j, this.id);
         else
-          board[i][j] = 2;
+          Checker newChecker = new Checker(2, i, j, this.id);
       }
     }
   }
@@ -30,9 +32,10 @@ public class Game {
   }
 
   public int getPlayerCount() {
-
+    return this.playerCount;
   }
 
+//TODO sandro and caleb
   public List<Integer> getUserIds() {
 
   }
@@ -40,9 +43,10 @@ public class Game {
   public List<User> getUsers() {
 
   }
+  //====
 
   public int[][] getBoard() {
-
+    return this.board;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -81,6 +85,27 @@ public class Game {
 
   public void makeKing(int pRow, int pCol) {
 
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// database Methods
+
+  public void save() {
+    try(Connection con = DB.sql2o.open()) {
+      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn) VALUES (:playerCount, :playerTurn)", true)
+        .addParameter("playerCount", this.playerCount)
+        .addParameter("playerTurn", this.playerTurn)
+        .executeUpdate()
+        .getKey();
+    }
+  }
+
+  public void delete() {
+    try(Connection con = DB.sql2o.open()) {
+      con.createQuery("DELETE FROM games WHERE id=:id")
+        .addParameter("id", this.id)
+        .executeUpdate();
+    }
   }
 
 }
