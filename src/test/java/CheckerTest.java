@@ -12,7 +12,7 @@ public class CheckerTest {
   @Before
   public void initialize() {
     firstChecker = new Checker(1, 2, 3, 4);
-    secondChecker = new Checker(1, 1, 1, 4);
+    secondChecker = new Checker(2, 1, 1, 4);
   }
 
   @Rule
@@ -93,5 +93,23 @@ public class CheckerTest {
     secondChecker.delete();
     assertEquals(firstChecker, Checker.find(firstCheckerId));
     assertEquals(null, Checker.find(secondCheckerId));
+  }
+
+  @Test
+  public void updatePosition_updatesCheckerPosition_true() {
+    firstChecker.save();
+    firstChecker.updatePosition(3, 4);
+    assertEquals(3, firstChecker.getRowPosition());
+    assertEquals(4, firstChecker.getColumnPosition());
+  }
+
+  @Test
+  public void updatePosition_updatesCheckerTypeDependingOnPosition_true() {
+    firstChecker.save();
+    firstChecker.updatePosition(7, 4);
+    secondChecker.save();
+    secondChecker.updatePosition(0, 4);
+    assertEquals(3, firstChecker.getType());
+    assertEquals(4, secondChecker.getType());
   }
 }
