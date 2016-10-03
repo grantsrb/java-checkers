@@ -1,0 +1,16 @@
+#board {
+  min-width: 100%;
+  min-height: auto;
+}
+
+.black {
+  background-color: black;
+  width: 100px;
+  height: 100px;
+}
+
+.white {
+  background-color: cornsilk;
+  width: 100px;
+  height: 100px;
+}

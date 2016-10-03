@@ -55,7 +55,7 @@ public class Game {
   public List<User> getUsers() {
     List<User> users = new ArrayList<>();
     for (Integer userId : this.getUserIds())
-      users.add(User.findById(userId));
+      users.add(User.find(userId));
     return users;
   }
 
@@ -112,38 +112,38 @@ public class Game {
     return true;
   }
 
-  public boolean specificMoveIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
-    if (!this.isLegalMove(pChecker, pRowFinish, pColFinish))
-      return false;
-    for (Checker checker : this.checkers) {
-      if (checker.getRowPosition == pRowFinish && checker.getColumnPosition() == pColFinish)
-        return false;
-    }
-    return true;
-  }
+  // public boolean specificMoveIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
+  //   if (!this.isLegalMove(pChecker, pRowFinish, pColFinish))
+  //     return false;
+  //   for (Checker checker : this.checkers) {
+  //     if (checker.getRowPosition == pRowFinish && checker.getColumnPosition() == pColFinish)
+  //       return false;
+  //   }
+  //   return true;
+  // }
 
-  public boolean specificCaptureIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
-
-  }
-
-  public boolean generalCaptureIsAvailable(Checker pChecker) {
-
-  }
-
-  public boolean generalMoveIsAvailable(Checker pChecker) {
-
-  }
+  // public boolean specificCaptureIsAvailable(Checker pChecker, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public boolean generalCaptureIsAvailable(Checker pChecker) {
+  //
+  // }
+  //
+  // public boolean generalMoveIsAvailable(Checker pChecker) {
+  //
+  // }
 
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
-  }
-
-  public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-
-  }
+  // public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
+  //
+  // }
+  //
+  // public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
+  //
+  // }
 
   /////////////////////////////////////////////////////////////////////////////
   /// database Methods
@@ -173,7 +173,8 @@ public class Game {
     } else {
       Game newGame = (Game) otherGame;
       return this.id == newGame.getId() &&
-             this.playerCount == newGame.getPlayerCount() && this.playerTurn == newGame.getPlayerTurn();
+             this.playerCount == newGame.getPlayerCount() &&
+             this.playerTurn == newGame.getPlayerTurn();
     }
   }
 
