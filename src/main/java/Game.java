@@ -82,43 +82,43 @@ public class Game {
   /////////////////////////////////////////////////////////////////////////////
   /// validator Methods
 
-  public Checker getCheckerInSpace(int pRowFinish, int pColFinish) {
+  public Checker getCheckerInSpace(int pSpecifiedRow, int pSpecifiedColumn) {
     for (Checker checker : this.checkers) {
-      if (checker.getRowPosition() == pRowFinish && checker.getColumnPosition() == pColFinish)
+      if (checker.getRowPosition() == pSpecifiedRow && checker.getColumnPosition() == pSpecifiedColumn)
         return checker;
     }
     return null;
   }
 
-  public boolean moveIsOffBoard(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(pRowFinish < 0 || pRowFinish > 7 || pColFinish > 7 || pColFinish < 0)
+  public boolean moveIsOffBoard(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(pSpecifiedRow < 0 || pSpecifiedRow > 7 || pSpecifiedColumn > 7 || pSpecifiedColumn < 0)
       return true;
     else
       return false;
   }
 
-  public boolean moveIsWrongDirection(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(pChecker.getType() == 1 && pRowFinish <= pChecker.getRowPosition())
+  public boolean moveIsWrongDirection(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(pChecker.getType() == 1 && pSpecifiedRow <= pChecker.getRowPosition())
       return true;
-    else if (pChecker.getType() == 2 && pRowFinish >= pChecker.getRowPosition())
-      return true;
-    else
-      return false;
-  }
-
-  public boolean moveIsSameColumnOrRow(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(pChecker.getColumnPosition() == pColFinish)
-      return true;
-    else if (pRowFinish == pChecker.getRowPosition())
+    else if (pChecker.getType() == 2 && pSpecifiedRow >= pChecker.getRowPosition())
       return true;
     else
       return false;
   }
 
-  public boolean moveIsOnNullSpace(Checker pChecker, int pRowFinish, int pColFinish) {
+  public boolean moveIsSameColumnOrRow(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(pChecker.getColumnPosition() == pSpecifiedColumn)
+      return true;
+    else if (pSpecifiedRow == pChecker.getRowPosition())
+      return true;
+    else
+      return false;
+  }
+
+  public boolean moveIsOnNullSpace(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     for (int i = 0; i < 8; i++) {
       for(int j = i%2; j < 8; j+=2) {
-        if (pRowFinish == i && pColFinish == j)
+        if (pSpecifiedRow == i && pSpecifiedColumn == j)
           return true;
       }
     }
@@ -126,56 +126,56 @@ public class Game {
   }
 
   // Checks if the board space is legal without factoring in availability or distance
-  public boolean spaceIsLegal(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(this.moveIsOffBoard(pChecker, pRowFinish, pColFinish))
+  public boolean spaceIsLegal(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(this.moveIsOffBoard(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if(this.moveIsSameColumnOrRow(pChecker, pRowFinish, pColFinish))
+    else if(this.moveIsSameColumnOrRow(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if (this.moveIsWrongDirection(pChecker, pRowFinish, pColFinish))
+    else if (this.moveIsWrongDirection(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if (this.moveIsOnNullSpace(pChecker, pRowFinish, pColFinish))
+    else if (this.moveIsOnNullSpace(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
     else
       return true;
   }
 
   // Checks for distance validity in regular move
-  public boolean isLegalMove(Checker pChecker, int pRowFinish, int pColFinish) {
-    if (!this.spaceIsLegal(pChecker, pRowFinish, pColFinish))
+  public boolean isLegalMove(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if (!this.spaceIsLegal(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if (1 < Math.abs(pChecker.getRowPosition() - pRowFinish))
+    else if (1 < Math.abs(pChecker.getRowPosition() - pSpecifiedRow))
       return false;
-    else if (1 < Math.abs(pChecker.getColumnPosition() - pColFinish))
+    else if (1 < Math.abs(pChecker.getColumnPosition() - pSpecifiedColumn))
       return false;
     else
       return true;
   }
 
   // Checks for distance validity in capturing move
-  public boolean isLegalCapture(Checker pChecker, int pRowFinish, int pColFinish) {
-    if (!this.spaceIsLegal(pChecker, pRowFinish, pColFinish))
+  public boolean isLegalCapture(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if (!this.spaceIsLegal(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if (1 == Math.abs(pChecker.getRowPosition() - pRowFinish) || 2 < Math.abs(pChecker.getRowPosition() - pRowFinish))
+    else if (1 == Math.abs(pChecker.getRowPosition() - pSpecifiedRow) || 2 < Math.abs(pChecker.getRowPosition() - pSpecifiedRow))
       return false;
-    else if (1 == Math.abs(pChecker.getColumnPosition() - pColFinish) || 2 < Math.abs(pChecker.getColumnPosition() - pColFinish))
-      return false;
-    else
-      return true;
-  }
-
-  public boolean specificMoveIsValid(Checker pChecker, int pRowFinish, int pColFinish) {
-    if (!this.isLegalMove(pChecker, pRowFinish, pColFinish))
-      return false;
-    else if (this.getCheckerInSpace(pRowFinish, pColFinish) != null)
+    else if (1 == Math.abs(pChecker.getColumnPosition() - pSpecifiedColumn) || 2 < Math.abs(pChecker.getColumnPosition() - pSpecifiedColumn))
       return false;
     else
       return true;
   }
 
-  public Checker getAdjacentOpponentChecker(Checker pChecker, int pRowFinish, int pColFinish) {
-    int rowSign = pRowFinish - pChecker.getRowPosition();
+  public boolean specificMoveIsValid(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if (!this.isLegalMove(pChecker, pSpecifiedRow, pSpecifiedColumn))
+      return false;
+    else if (this.getCheckerInSpace(pSpecifiedRow, pSpecifiedColumn) != null)
+      return false;
+    else
+      return true;
+  }
+
+  public Checker getAdjacentOpponentChecker(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    int rowSign = pSpecifiedRow - pChecker.getRowPosition();
     rowSign = rowSign/Math.abs(rowSign);
-    int colSign = pColFinish - pChecker.getColumnPosition();
+    int colSign = pSpecifiedColumn - pChecker.getColumnPosition();
     colSign = colSign/Math.abs(colSign);
     Checker capturedChecker = this.getCheckerInSpace(pChecker.getRowPosition() + rowSign, pChecker.getColumnPosition() + colSign);
     if (capturedChecker != null && capturedChecker.getType() != pChecker.getType() && 2 != Math.abs(capturedChecker.getType()-pChecker.getType()))
@@ -184,12 +184,12 @@ public class Game {
       return null;
   }
 
-  public boolean specificCaptureIsValid(Checker pChecker, int pRowFinish, int pColFinish) {
-    if (!this.isLegalCapture(pChecker, pRowFinish, pColFinish))
+  public boolean specificCaptureIsValid(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if (!this.isLegalCapture(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
-    else if (this.getCheckerInSpace(pRowFinish, pColFinish) != null)
+    else if (this.getCheckerInSpace(pSpecifiedRow, pSpecifiedColumn) != null)
       return false;
-    else if (this.getAdjacentOpponentChecker(pChecker, pRowFinish, pColFinish) != null)
+    else if (this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn) != null)
       return true;
     else
       return false;
@@ -231,18 +231,18 @@ public class Game {
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public void movePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(this.specificMoveIsValid(pChecker, pRowFinish, pColFinish)) {
-      pChecker.updatePosition(pRowFinish, pColFinish);
+  public void movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
+      pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.playerTurn = this.playerTurn%2 + 1;
     }
   }
 
-  public void capturePiece(Checker pChecker, int pRowFinish, int pColFinish) {
-    if(this.specificCaptureIsValid(pChecker, pRowFinish, pColFinish)) {
-      Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pRowFinish, pColFinish);
+  public void capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
+      Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
-      pChecker.updatePosition(pRowFinish, pColFinish);
+      pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.playerTurn = this.playerTurn%2 + 1;
       this.checkers = this.getCheckers();
     }
