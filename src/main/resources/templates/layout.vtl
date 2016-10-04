@@ -3,11 +3,34 @@
   <head>
     <meta charset="utf-8">
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
-    <link href='../../../../app.css' rel='stylesheet' type="text/css">
-    <title></title>
+    <link href='../app.css' rel='stylesheet' type="text/css">
+    <link rel="stylesheet" href="../../css/login.css" type="text/css">
+    <title>Checkers</title>
   </head>
   <body>
     <div class="container">
+      <div class="nav">
+        <nav class="navbar navbar-light bg-faded">
+          <a class="navbar-brand" href="#">Checkers</a>
+          <ul class="nav navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            #if($loggedInStatus != true)
+            <li class="nav-item pull-xs-right">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            #else
+            <li class="nav-item pull-xs-right">
+              <a class="nav-link" href="/">Logout</a>
+            </li>
+            #end
+          </ul>
+        </nav>
+      </div>
       #parse( $template )
     </div>
   </body>

@@ -11,6 +11,7 @@ public class User {
   private int id;
 
   public static boolean loggedIn = false;
+  public static User loggedInUser = null;
 
   public User(String username, String password) {
     this.username = username;
@@ -61,16 +62,6 @@ public class User {
       }
       return user;
     }
-  }
-
-  public static boolean isLoggedIn(String username, String password) {
-    try {
-      User.login(username, password);
-    } catch (RuntimeException exception) {
-      return false;
-    }
-    loggedIn = true;
-    return true;
   }
 
   public void save() {
@@ -164,4 +155,18 @@ public class User {
       this.getId() == newUser.getId();
     }
   }
+
+  public static boolean userAlreadyExists(String _userName) {
+    try(Connection con = DB.sql2o.open()) {
+      User match = con.createQuery("SELECT * FROM users WHERE username = :userName")
+          .addParameter("userName", _userName)
+          .executeAndFetchFirst(User.class);
+      if(match == null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
 }
