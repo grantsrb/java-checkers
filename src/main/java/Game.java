@@ -67,6 +67,10 @@ public class Game {
     return users;
   }
 
+  public void populateCheckers() {
+    this.checkers = this.getCheckers();
+  }
+
   public List<Checker> getCheckers() {
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery("SELECT * FROM checkers WHERE gameId=:gameId")
@@ -165,7 +169,6 @@ public class Game {
   }
 
   public boolean specificMoveIsValid(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
-    System.out.println(pChecker.getId() + " " + pSpecifiedRow + " " + pSpecifiedColumn);
     if (!this.isLegalMove(pChecker, pSpecifiedRow, pSpecifiedColumn))
       return false;
     else if (this.getCheckerInSpace(pSpecifiedRow, pSpecifiedColumn) != null)
@@ -264,12 +267,10 @@ public class Game {
   }
 
   public void delete() {
-    System.out.println("hey");
-    for (int i = 0; i < this.checkers.size(); i++) {
-      Checker checker = this.checkers.get(i);
-      checker.delete();
-    }
     try(Connection con = DB.sql2o.open()) {
+      con.createQuery("DELETE FROM checkers WHERE gameId=:gameId")
+        .addParameter("gameId", this.id)
+        .executeUpdate();
       con.createQuery("DELETE FROM games WHERE id=:id")
         .addParameter("id", this.id)
         .executeUpdate();
@@ -292,18 +293,26 @@ public class Game {
   /// static Methods
 
   public static Game findById(int pId) {
+    Game game;
     try (Connection con = DB.sql2o.open()) {
-      return con.createQuery("SELECT * FROM games WHERE id=:id")
+      game = con.createQuery("SELECT * FROM games WHERE id=:id")
         .addParameter("id", pId)
         .executeAndFetchFirst(Game.class);
     }
+    game.populateCheckers();
+    return game;
   }
 
   public static List<Game> all() {
+    List<Game> games;
     try (Connection con = DB.sql2o.open()) {
-      return con.createQuery("SELECT * FROM games")
+       games = con.createQuery("SELECT * FROM games")
         .executeAndFetch(Game.class);
     }
+    for (int i = 0; i < games.size(); i++) {
+      games.get(i).populateCheckers();
+    }
+    return games;
   }
 
 }

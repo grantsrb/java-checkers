@@ -5,15 +5,15 @@
         <tr>
           #foreach($column in $columns)
             #if($row % 2 == 0 && $column % 2 == 0 || $row % 2 == 1 && $column % 2 == 1)
-              <td><div class="red"></div></td>
+              <td><div class="red">Hey</div></td>
             #else
               <td>
                 <div class="black">
                   #foreach($rowLegal in $rowsLegal)
                     #foreach($columnLegal in $columnsLegal)
-                      #if($row == $rowLegal && $column == $columnLegal && $rowsLegal.indexOf($rowLegal) == $columnsLegal.indexOf($columnLegal))
+                      #if($row == $rowLegal && $column == $columnLegal)
                         <form action="/moves/legal" method="post">
-                          <button type="submit" class="black" name="moveLegal" value=("$row" + "$column")></button>
+                          <button type="submit" class="black" name="moveLegal" value="$row $column">Yo</button>
                         </form>
                       #end
                     #end

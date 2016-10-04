@@ -11,16 +11,13 @@ public class App {
   public static void main(String[] args) {
     staticFileLocation("/public");
     String layout = "templates/layout.vtl";
-    int[] board = {0,1,2,3,4,5,6,7};
+    final int[] board = {0,1,2,3,4,5,6,7};
 
     get("/", (request, response) -> {
       Map<String, Object> model = new HashMap<>();
-      for (int i = 0; i < Game.all().size(); i++) {
-        Game game = Game.all().get(i);
-        System.out.println(game.getId());
-        game.delete();
-      }
       Game newGame = new Game(2);
+      model.put("rowsLegal", null);
+      model.put("columnsLegal", null);
       model.put("checkers", Checker.all());
       model.put("rows", board);
       model.put("columns", board);
