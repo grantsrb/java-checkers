@@ -9,10 +9,25 @@
             #else
               <td>
                 <div class="black">
-                  #if($row < 3)
-                    <button type="submit" class="whiteChecker"></button>
-                  #elseif($row > 4)
-                    <button type="submit" class="redChecker"></button>
+                  #foreach($rowLegal in $rowsLegal)
+                    #foreach($columnLegal in $columnsLegal)
+                      #if($row == $rowLegal && $column == $columnLegal && $rowsLegal.indexOf($rowLegal) == $columnsLegal.indexOf($columnLegal))
+                        <form action="/moves/legal" method="post">
+                          <button type="submit" class="black" name="moveLegal" value=("$row" + "$column")></button>
+                        </form>
+                      #end
+                    #end
+                  #end
+                  #foreach($checker in $checkers)
+                    #if($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 1)
+                      <form action="/move/white" method="post">
+                        <button type="submit" class="whiteChecker" name="whiteChecker" value="$checker.getId()" disabled></button>
+                      </form>
+                    #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 2)
+                      <form action="/move/red" method="post">
+                        <button type="submit" class="redChecker" name="redChecker" value="$checker.getId()"></button>
+                      </form>
+                    #end
                   #end
                 </div>
               </td>
