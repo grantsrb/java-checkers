@@ -21,42 +21,65 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    get("/checkers-game", (request, response) -> {
-      Game newGame = new Game(2);
+    post("/game/new", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      int players = Integer.parseInt(request.queryParams("players"));
+      Game newGame = new Game(players);
       model.put("rowsLegal", null);
       model.put("columnsLegal", null);
-      model.put("checkers", Checker.all());
+      model.put("checkers", newGame.getCheckers());
       model.put("rows", board);
       model.put("columns", board);
       model.put("template", "templates/checkers.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    post("/move/red", (request, response) -> {
+    post("/moves/legal/red", (request, response) -> {
       Map<String, Object> model = new HashMap<>();
-      List<Integer> rows = new ArrayList<Integer>();
-      List<Integer> columns = new ArrayList<Integer>();
+      List<Integer> legalRows = new ArrayList<Integer>();
+      List<Integer> legalColumns = new ArrayList<Integer>();
+      List<Integer> indexes = new ArrayList<Integer>();
       Checker checker = Checker.find(Integer.parseInt(request.queryParams("redChecker")));
       Game game = Game.findById(checker.getGameId());
       for (int i = 0; i < board.length ; i++ ) {
         for (int j = 0; j < board.length ; j++ ) {
           if(game.specificMoveIsValid(checker, i, j)) {
-            rows.add(i);
-            columns.add(j);
+            legalRows.add(i);
+            legalColumns.add(j);
+            indexes.add(legalRows.size()-1);
           }
         }
       }
-      model.put("rowsLegal", rows);
-      model.put("columnsLegal", columns);
+      model.put("legalIndexes", indexes);
+      model.put("legalRows", legalRows);
+      model.put("legalColumns", legalColumns);
       model.put("rows", board);
       model.put("columns", board);
-      model.put("checkers", Checker.all());
+      model.put("checkers", game.getCheckers());
+      model.put("currentChecker", checker);
       model.put("template", "templates/checkers.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/checker/:id/move", (request, response) -> {
+      Map<String, Object> model =  new HashMap<>();
+      Checker checker = Checker.find(Integer.parseInt(request.params("id")));
+      Game game = Game.findById(checker.getGameId());
+      int position = Integer.parseInt(request.queryParams("move"));
+      int column = position % 10;
+      int row = position / 10;
+      checker.updatePosition(row, column);
+      model.put("rows", board);
+      model.put("columns", board);
+      model.put("checkers", game.getCheckers());
+      model.put("template", "templates/checkers.vtl");
+      return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
     get("/login",(request,response) -> { // Directs to sign in page
       Map<String,Object> model = new HashMap<>();
-      return new ModelAndView(model, "templates/login.vtl");
+      model.put("template", "templates/login.vtl");
+      return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
 
     post("/login", (request,response) -> { // Directs to home page if successful login

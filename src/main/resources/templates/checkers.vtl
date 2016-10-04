@@ -5,26 +5,24 @@
         <tr>
           #foreach($column in $columns)
             #if($row % 2 == 0 && $column % 2 == 0 || $row % 2 == 1 && $column % 2 == 1)
-              <td><div class="red">Hey</div></td>
+              <td><div class="red"></div></td>
             #else
               <td>
                 <div class="black">
-                  #foreach($rowLegal in $rowsLegal)
-                    #foreach($columnLegal in $columnsLegal)
-                      #if($row == $rowLegal && $column == $columnLegal)
-                        <form action="/moves/legal" method="post">
-                          <button type="submit" class="black" name="moveLegal" value="$row $column">Yo</button>
-                        </form>
-                      #end
+                  #foreach($index in $legalIndexes)
+                    #if($row == $legalRows.get($index) && $column == $legalColumns.get($index))
+                      <form action="/checker/$currentChecker.getId()/move" method="post">
+                        <button type="submit" class="black" name="move" value="$row$column"></button>
+                      </form>
                     #end
                   #end
                   #foreach($checker in $checkers)
                     #if($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 1)
-                      <form action="/move/white" method="post">
+                      <form action="/moves/legal/white" method="post">
                         <button type="submit" class="whiteChecker" name="whiteChecker" value="$checker.getId()" disabled></button>
                       </form>
                     #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 2)
-                      <form action="/move/red" method="post">
+                      <form action="/moves/legal/red" method="post">
                         <button type="submit" class="redChecker" name="redChecker" value="$checker.getId()"></button>
                       </form>
                     #end
