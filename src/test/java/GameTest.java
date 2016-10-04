@@ -172,4 +172,21 @@ public class GameTest {
     assertTrue(testGame.generalMoveIsAvailable(testChecker2));
   }
 
+  @Test
+  public void movePiece_recordsCheckerMoveInChecker_void() {
+    Checker testChecker2 = testGame.getCheckerInSpace(2,1);
+    testGame.movePiece(testChecker2, 3, 0);
+    assertTrue(testChecker2.equals(testGame.getCheckerInSpace(3,0)));
+  }
+
+  @Test
+  public void capturePiece_removesCapturedPieceAfterMovingCheckerInValidCaptureMove_void() {
+    Checker testChecker2 = testGame.getCheckerInSpace(2,1);
+    Checker testChecker3 = testGame.getCheckerInSpace(5,4);
+    testGame.movePiece(testChecker2, 3, 2);
+    testGame.movePiece(testChecker3, 4,3);
+    testGame.capturePiece(testChecker2, 5,4);
+    assertEquals(null, testGame.getCheckerInSpace(4,3));
+  }
+
 }
