@@ -59,7 +59,7 @@ public class App {
         User.loggedIn = true;
         User newUser = new User(userName, password);
         newUser.save();
-        User.loggedInUser = userName;
+        User.loggedInUser = newUser;
         model.put("loggedInStatus", User.loggedIn);
         model.put("loggedInUser", User.loggedInUser);
         model.put("template", "templates/index.vtl");

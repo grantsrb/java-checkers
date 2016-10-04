@@ -156,11 +156,10 @@ public class User {
     }
   }
 
-  public static boolean validUser(String _userName, String _password) {
+  public static boolean userAlreadyExists(String _userName) {
     try(Connection con = DB.sql2o.open()) {
-      User match = con.createQuery("SELECT * FROM users WHERE username = :userName AND password = :password")
+      User match = con.createQuery("SELECT * FROM users WHERE username = :userName")
           .addParameter("userName", _userName)
-          .addParameter("password", _password)
           .executeAndFetchFirst(User.class);
       if(match == null) {
         return false;
