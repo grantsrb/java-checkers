@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, intial-scale=1">
+    <title>Checkers</title>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="sign-in-body" class="container">
+      <h3>Sign In</h3>
+      <form action="/sign-in" method="post">
+        <div class="form-group">
+          <label for="user-name">Enter your user name:</label>
+          <input type="text" id="user-name" name="user-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Enter your password:</label>
+          <input type="password" id="password" name="password" class="form-control password" required>
+        </div>
+        <button type="submit" class="btn btn-success">Log In</button>
+      </form>
+
+      #if($invalidLogin)
+        <p><em class="invalid">Invalid login, please try again or create account</em></p>
+      #end
+
+      <h3>Create New Account</h3>
+      <form action="/new-account" method="post">
+        <div class="form-group">
+          <label for="create-user-name">Enter a user name:</label>
+          <input type="text" id="create-user-name" name="create-user-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="create-password">Enter a password:</label>
+          <input type="password" id="create-password" name="create-password" class="form-control password" required>
+        </div>
+        <button type="submit" class="btn btn-success">Log In</button>
+      </form>
+
+      #if($invalidUserName)
+        <p><em class="invalid">Invalid user name, please try again</em></p>
+      #end
+
+      <a id="back-button" href="/">Back</a>
+    </div>
+  </body>
+</html>
