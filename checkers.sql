@@ -30,6 +30,76 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: checkers; Type: TABLE; Schema: public; Owner: Guest; Tablespace: 
+--
+
+CREATE TABLE checkers (
+    id integer NOT NULL,
+    type integer,
+    columnposition integer,
+    rowposition integer,
+    gameid integer
+);
+
+
+ALTER TABLE checkers OWNER TO "Guest";
+
+--
+-- Name: checkers_id_seq; Type: SEQUENCE; Schema: public; Owner: Guest
+--
+
+CREATE SEQUENCE checkers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE checkers_id_seq OWNER TO "Guest";
+
+--
+-- Name: checkers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Guest
+--
+
+ALTER SEQUENCE checkers_id_seq OWNED BY checkers.id;
+
+
+--
+-- Name: games; Type: TABLE; Schema: public; Owner: Guest; Tablespace: 
+--
+
+CREATE TABLE games (
+    id integer NOT NULL,
+    playercount integer,
+    playerturn integer
+);
+
+
+ALTER TABLE games OWNER TO "Guest";
+
+--
+-- Name: games_id_seq; Type: SEQUENCE; Schema: public; Owner: Guest
+--
+
+CREATE SEQUENCE games_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE games_id_seq OWNER TO "Guest";
+
+--
+-- Name: games_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Guest
+--
+
+ALTER SEQUENCE games_id_seq OWNED BY games.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: Guest; Tablespace: 
 --
 
@@ -103,6 +173,20 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: Guest
 --
 
+ALTER TABLE ONLY checkers ALTER COLUMN id SET DEFAULT nextval('checkers_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: Guest
+--
+
+ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: Guest
+--
+
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
@@ -111,6 +195,36 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 --
 
 ALTER TABLE ONLY users_games ALTER COLUMN id SET DEFAULT nextval('users_games_id_seq'::regclass);
+
+
+--
+-- Data for Name: checkers; Type: TABLE DATA; Schema: public; Owner: Guest
+--
+
+COPY checkers (id, type, columnposition, rowposition, gameid) FROM stdin;
+\.
+
+
+--
+-- Name: checkers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Guest
+--
+
+SELECT pg_catalog.setval('checkers_id_seq', 1, false);
+
+
+--
+-- Data for Name: games; Type: TABLE DATA; Schema: public; Owner: Guest
+--
+
+COPY games (id, playercount, playerturn) FROM stdin;
+\.
+
+
+--
+-- Name: games_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Guest
+--
+
+SELECT pg_catalog.setval('games_id_seq', 1, false);
 
 
 --
@@ -141,6 +255,22 @@ SELECT pg_catalog.setval('users_games_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('users_id_seq', 1, false);
+
+
+--
+-- Name: checkers_pkey; Type: CONSTRAINT; Schema: public; Owner: Guest; Tablespace: 
+--
+
+ALTER TABLE ONLY checkers
+    ADD CONSTRAINT checkers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: games_pkey; Type: CONSTRAINT; Schema: public; Owner: Guest; Tablespace: 
+--
+
+ALTER TABLE ONLY games
+    ADD CONSTRAINT games_pkey PRIMARY KEY (id);
 
 
 --
