@@ -18,13 +18,37 @@
                   #end
                   #foreach($checker in $checkers)
                     #if($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 1)
-                      <form action="/moves/legal/white" method="post">
-                        <button type="submit" class="whiteChecker" name="whiteChecker" value="$checker.getId()" disabled></button>
-                      </form>
+                      #if($playerTurn == 1)
+                        <form action="/moves/legal" method="post">
+                          <button type="submit" class="whiteChecker" name="checker" value="$checker.getId()"></button>
+                        </form>
+                      #else
+                        <button type="button" class="whiteChecker" disabled></button>
+                      #end
                     #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 2)
-                      <form action="/moves/legal/red" method="post">
-                        <button type="submit" class="redChecker" name="redChecker" value="$checker.getId()"></button>
-                      </form>
+                      #if($playerTurn == 2)
+                        <form action="/moves/legal" method="post">
+                          <button type="submit" class="redChecker" name="checker" value="$checker.getId()"></button>
+                        </form>
+                      #else
+                        <button type="button" class="redChecker" disabled></button>
+                      #end
+                    #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 3)
+                      #if($playerTurn == 1)
+                        <form action="/moves/legal" method="post">
+                          <button type="submit" class="whiteChecker" name="checker" value="$checker.getId()"><span class="glyphicon glyphicon-king"></span></button>
+                        </form>
+                      #else
+                        <button type="button" class="whiteChecker" disabled><span class="glyphicon glyphicon-king"></span></button>
+                      #end
+                    #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 4)
+                      #if($playerTurn == 2)
+                        <form action="/moves/legal" method="post">
+                          <button type="submit" class="redChecker" name="checker" value="$checker.getId()"><span class="glyphicon glyphicon-king"></span></button>
+                        </form>
+                      #else
+                        <button type="button" class="redChecker" disabled><span class="glyphicon glyphicon-king"></span></button>
+                      #end
                     #end
                   #end
                 </div>
@@ -36,3 +60,7 @@
     </table>
   </div>
 </div>
+
+#if($gameOver)
+  <h1>You Lose</h1>
+#end

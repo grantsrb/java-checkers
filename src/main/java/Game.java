@@ -11,7 +11,7 @@ public class Game {
 
   public Game(int pPlayerCount) {
     this.playerCount = pPlayerCount;
-    this.playerTurn = 1;
+    this.playerTurn = 2;
     this.save();
     for (int i = 0; i < 8; i++) {
       for(int j = (i+1)%2; j < 8; j+=2) {
@@ -76,6 +76,16 @@ public class Game {
       return con.createQuery("SELECT * FROM checkers WHERE gameId=:gameId")
         .addParameter("gameId", this.id)
         .executeAndFetch(Checker.class);
+    }
+  }
+
+  public void updatePlayerTurn() {
+    this.playerTurn = this.playerTurn%2 + 1;
+    try(Connection con = DB.sql2o.open()) {
+      con.createQuery("UPDATE games SET playerTurn=:playerTurn WHERE id=:id")
+        .addParameter("playerTurn", this.playerTurn)
+        .addParameter("id", this.id)
+        .executeUpdate();
     }
   }
 
@@ -239,7 +249,7 @@ public class Game {
   public void movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
-      this.playerTurn = this.playerTurn%2 + 1;
+      this.updatePlayerTurn();
     }
   }
 
@@ -248,7 +258,7 @@ public class Game {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
-      this.playerTurn = this.playerTurn%2 + 1;
+      this.updatePlayerTurn();
       this.checkers = this.getCheckers();
     }
   }

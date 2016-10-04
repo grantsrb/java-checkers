@@ -8,10 +8,12 @@ import spark.template.velocity.VelocityTemplateEngine;
 import static spark.Spark.*;
 
 public class App {
+  private static final int[] board = {0,1,2,3,4,5,6,7};
+
   public static void main(String[] args) {
     staticFileLocation("/public");
     String layout = "templates/layout.vtl";
-    final int[] board = {0,1,2,3,4,5,6,7};
+
 
     get("/", (request, response) -> {
       Map<String, Object> model = new HashMap<>();
@@ -22,28 +24,21 @@ public class App {
     }, new VelocityTemplateEngine());
 
     post("/game/new", (request, response) -> {
-      Map<String, Object> model = new HashMap<>();
       int players = Integer.parseInt(request.queryParams("players"));
       Game newGame = new Game(players);
-      model.put("rowsLegal", null);
-      model.put("columnsLegal", null);
-      model.put("checkers", newGame.getCheckers());
-      model.put("rows", board);
-      model.put("columns", board);
-      model.put("template", "templates/checkers.vtl");
-      return new ModelAndView(model, layout);
+      return new ModelAndView(boardModel(newGame), layout);
     }, new VelocityTemplateEngine());
 
-    post("/moves/legal/red", (request, response) -> {
-      Map<String, Object> model = new HashMap<>();
+    post("/moves/legal", (request, response) -> {
       List<Integer> legalRows = new ArrayList<Integer>();
       List<Integer> legalColumns = new ArrayList<Integer>();
       List<Integer> indexes = new ArrayList<Integer>();
-      Checker checker = Checker.find(Integer.parseInt(request.queryParams("redChecker")));
+      Checker checker = Checker.find(Integer.parseInt(request.queryParams("checker")));
       Game game = Game.findById(checker.getGameId());
+      Map<String, Object> model = boardModel(game);
       for (int i = 0; i < board.length ; i++ ) {
         for (int j = 0; j < board.length ; j++ ) {
-          if(game.specificMoveIsValid(checker, i, j)) {
+          if(game.specificMoveIsValid(checker, i, j) || game.specificCaptureIsValid(checker, i, j)) {
             legalRows.add(i);
             legalColumns.add(j);
             indexes.add(legalRows.size()-1);
@@ -53,11 +48,7 @@ public class App {
       model.put("legalIndexes", indexes);
       model.put("legalRows", legalRows);
       model.put("legalColumns", legalColumns);
-      model.put("rows", board);
-      model.put("columns", board);
-      model.put("checkers", game.getCheckers());
       model.put("currentChecker", checker);
-      model.put("template", "templates/checkers.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -68,12 +59,9 @@ public class App {
       int position = Integer.parseInt(request.queryParams("move"));
       int column = position % 10;
       int row = position / 10;
-      checker.updatePosition(row, column);
-      model.put("rows", board);
-      model.put("columns", board);
-      model.put("checkers", game.getCheckers());
-      model.put("template", "templates/checkers.vtl");
-      return new ModelAndView(model, layout);
+      game.movePiece(checker, row, column);
+      game.capturePiece(checker, row, column);
+      return new ModelAndView(boardModel(game), layout);
     }, new VelocityTemplateEngine());
 
     get("/login",(request,response) -> { // Directs to sign in page
@@ -133,5 +121,17 @@ public class App {
     //   model.put("template", "templates/index.vtl");
     //   return new ModelAndView(model, layout);
     // }, new VelocityTemplateEngine());
+  }
+
+  public static Map<String,Object> boardModel(Game pGame) {
+    Map<String,Object> model = new HashMap<>();
+    System.out.println(pGame.getPlayerTurn());
+    model.put("playerTurn", pGame.getPlayerTurn());
+    model.put("checkers", pGame.getCheckers());
+    model.put("rows", board);
+    model.put("columns", board);
+    model.put("gameOver", pGame.gameIsOver());
+    model.put("template", "templates/checkers.vtl");
+    return model;
   }
 }
