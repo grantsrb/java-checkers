@@ -43,7 +43,7 @@ public class User {
 
   public List<Game> getGames() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM games WHERE userid = :id";
+      String sql = "SELECT * FROM users_games WHERE userid = :id";
       return con.createQuery(sql)
         .addParameter("id", this.id)
         .executeAndFetch(Game.class);

@@ -33,3 +33,17 @@
   border-radius: 50%;
   margin: 25%;
 }
+
+.glyphicon-sunglasses {
+  font-size: 2.5em;
+  margin-left: 6%;
+}
+
+.glyphicon-education {
+  font-size: 2.5em;
+}
+
+/*#logout {
+  border:none;
+  background: none;
+}*/
