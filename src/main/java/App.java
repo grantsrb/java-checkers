@@ -28,6 +28,12 @@ public class App {
       return new ModelAndView(boardModel(newGame), layout);
     }, new VelocityTemplateEngine());
 
+    // post("/checkers/:userid/:gameid/save", (request, response) -> {
+    //   Map<String, Object> model = new HashMap<>();
+    //   User user = User.find(Integer.parseInt(request.queryParams("userid")));
+    //
+    // }, new VelocityTemplateEngine());
+
     post("/moves/legal", (request, response) -> {
       List<Integer> legalRows = new ArrayList<Integer>();
       List<Integer> legalColumns = new ArrayList<Integer>();
@@ -90,6 +96,14 @@ public class App {
       }
     },new VelocityTemplateEngine());
 
+    get("/user-page",(request,response) -> { // Directs to user page
+      Map<String,Object> model = new HashMap<>();
+      model.put("loggedInStatus", User.loggedIn);
+      model.put("loggedInUser", User.loggedInUser);
+      model.put("template", "templates/user-page.vtl");
+      return new ModelAndView(model, layout);
+    },new VelocityTemplateEngine());
+
     post("/new-account", (request,response) -> {
       Map<String,Object> model = new HashMap<>();
       String userName = request.queryParams("create-user-name");
@@ -118,13 +132,6 @@ public class App {
       model.put("template", "templates/index.vtl");
       return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
-
-    // get("/checkers/:userid/account", (request, response) -> {
-    //   Map<String,Object> model = new HashMap<>();
-    //   User user = User.find(request.queryParams("userid"));
-    //   model.put("user", user);
-    //   model.put("games", )
-    // }, new VelocityTemplateEngine());
 
   }
 
