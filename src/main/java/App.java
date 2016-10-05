@@ -37,7 +37,7 @@ public class App {
       Map<String, Object> model = boardModel(game);
       for (int i = 0; i < board.length ; i++ ) {
         for (int j = 0; j < board.length ; j++ ) {
-          if(game.specificMoveIsValid(checker, i, j) && checker.getType() == game.getPlayerTurn() || game.specificCaptureIsValid(checker, i, j)) {
+          if(game.specificMoveIsValid(checker, i, j) && checker.getType() % 2 == game.getPlayerTurn() % 2 || game.specificCaptureIsValid(checker, i, j)) {
             legalRows.add(i);
             legalColumns.add(j);
             indexes.add(legalRows.size()-1);

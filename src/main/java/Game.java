@@ -259,7 +259,7 @@ public class Game {
       capturedChecker.delete();
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.checkers = this.getCheckers();
-      if(pChecker.getType() == this.getPlayerTurn())
+      if(pChecker.getType() == this.getPlayerTurn() || pChecker.getType() == this.getPlayerTurn() + 2)
         this.updatePlayerTurn();
       if(!this.generalCaptureIsAvailable(pChecker)) {
         return false;
