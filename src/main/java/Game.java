@@ -253,14 +253,20 @@ public class Game {
     }
   }
 
-  public void capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public boolean capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
-      this.updatePlayerTurn();
       this.checkers = this.getCheckers();
+      if(pChecker.getType() == this.getPlayerTurn())
+        this.updatePlayerTurn();
+      if(!this.generalCaptureIsAvailable(pChecker)) {
+        return false;
+      } else
+        return true;
     }
+    return false;
   }
 
   /////////////////////////////////////////////////////////////////////////////

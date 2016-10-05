@@ -137,7 +137,7 @@ public class UserTest {
     try {
       User myUser = User.login("sandro", "qwerty");
     } catch(RuntimeException exception) { }
-    assertFalse(User.isLoggedIn("sandro", "qwerty"));
+    assertFalse(User.userAlreadyExists("sandro"));
   }
 
   // @Test

@@ -38,7 +38,7 @@ public class App {
       Map<String, Object> model = boardModel(game);
       for (int i = 0; i < board.length ; i++ ) {
         for (int j = 0; j < board.length ; j++ ) {
-          if(game.specificMoveIsValid(checker, i, j) || game.specificCaptureIsValid(checker, i, j)) {
+          if(game.specificMoveIsValid(checker, i, j) && checker.getType() == game.getPlayerTurn() || game.specificCaptureIsValid(checker, i, j)) {
             legalRows.add(i);
             legalColumns.add(j);
             indexes.add(legalRows.size()-1);
@@ -53,15 +53,17 @@ public class App {
     }, new VelocityTemplateEngine());
 
     post("/checker/:id/move", (request, response) -> {
-      Map<String, Object> model =  new HashMap<>();
       Checker checker = Checker.find(Integer.parseInt(request.params("id")));
       Game game = Game.findById(checker.getGameId());
       int position = Integer.parseInt(request.queryParams("move"));
       int column = position % 10;
       int row = position / 10;
       game.movePiece(checker, row, column);
-      game.capturePiece(checker, row, column);
-      return new ModelAndView(boardModel(game), layout);
+      boolean doubleJumpAvailable = game.capturePiece(checker, row, column);
+      Map<String, Object> model = boardModel(game);
+      if (doubleJumpAvailable)
+        model.put("currentChecker", checker);
+      return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
     get("/login",(request,response) -> { // Directs to sign in page
@@ -125,7 +127,6 @@ public class App {
 
   public static Map<String,Object> boardModel(Game pGame) {
     Map<String,Object> model = new HashMap<>();
-    System.out.println(pGame.getPlayerTurn());
     model.put("playerTurn", pGame.getPlayerTurn());
     model.put("checkers", pGame.getCheckers());
     model.put("rows", board);

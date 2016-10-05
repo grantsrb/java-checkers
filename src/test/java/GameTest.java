@@ -64,7 +64,7 @@ public class GameTest {
 
   @Test
   public void getPlayerTurn_returnsPlayerTurnOfGame_int() {
-    assertTrue(testGame.getPlayerTurn() == 1);
+    assertTrue(testGame.getPlayerTurn() == 2);
   }
 
   @Test

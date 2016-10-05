@@ -18,7 +18,7 @@
                   #end
                   #foreach($checker in $checkers)
                     #if($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 1)
-                      #if($playerTurn == 1)
+                      #if($playerTurn == 1 || $checker.equals($currentChecker))
                         <form action="/moves/legal" method="post">
                           <button type="submit" class="whiteChecker" name="checker" value="$checker.getId()"></button>
                         </form>
@@ -26,7 +26,7 @@
                         <button type="button" class="whiteChecker" disabled></button>
                       #end
                     #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 2)
-                      #if($playerTurn == 2)
+                      #if($playerTurn == 2 || $checker.equals($currentChecker))
                         <form action="/moves/legal" method="post">
                           <button type="submit" class="redChecker" name="checker" value="$checker.getId()"></button>
                         </form>
@@ -34,7 +34,7 @@
                         <button type="button" class="redChecker" disabled></button>
                       #end
                     #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 3)
-                      #if($playerTurn == 1)
+                      #if($playerTurn == 1 || $checker.equals($currentChecker))
                         <form action="/moves/legal" method="post">
                           <button type="submit" class="whiteChecker" name="checker" value="$checker.getId()"><span class="glyphicon glyphicon-king"></span></button>
                         </form>
@@ -42,7 +42,7 @@
                         <button type="button" class="whiteChecker" disabled><span class="glyphicon glyphicon-king"></span></button>
                       #end
                     #elseif($row == $checker.getRowPosition() && $column == $checker.getColumnPosition() && $checker.getType() == 4)
-                      #if($playerTurn == 2)
+                      #if($playerTurn == 2 || $checker.equals($currentChecker))
                         <form action="/moves/legal" method="post">
                           <button type="submit" class="redChecker" name="checker" value="$checker.getId()"><span class="glyphicon glyphicon-king"></span></button>
                         </form>
