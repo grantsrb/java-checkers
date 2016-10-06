@@ -71,8 +71,13 @@ public class App {
       game.movePiece(checker, row, column);
       boolean doubleJumpAvailable = game.capturePiece(checker, row, column);
       Map<String, Object> model = boardModel(game);
-      if (doubleJumpAvailable)
+      if (doubleJumpAvailable && game.getPlayerCount() == 2) {
         model.put("currentChecker", checker);
+      } else if(game.getPlayerCount() == 1){
+        EasyAI ai = new EasyAI(game.getId());
+        ai.move();
+        model = boardModel(ai.getCurrentGame());
+      }
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -111,7 +116,7 @@ public class App {
       return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
 
-    post("/user/:userid/game/:id", (request, response) -> {
+    get("/user/:userid/game/:id", (request, response) -> {
       int userId = Integer.parseInt(request.params("userid"));
       int gameId = Integer.parseInt(request.params("id"));
       Game game = Game.findById(gameId);

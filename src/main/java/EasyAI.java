@@ -6,9 +6,7 @@ import java.util.Random;
 
 public class EasyAI {
   private Game currentGame;
-  private String name;
   private int id;
-  public MoveValue testingVariable;
 
   private class MoveValue{
     public float moveValue;
@@ -26,11 +24,8 @@ public class EasyAI {
     }
   }
 
-  public EasyAI(String pname, int pboardId) {
-    this.name = pname;
+  public EasyAI(int pboardId) {
     this.currentGame = Game.findById(pboardId);
-    this.testingVariable = new MoveValue();
-    this.testingVariable.row = 0;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +55,10 @@ public class EasyAI {
   }
 
   public void generateMoves(int range, List<Checker> pcheckers, int pcheckerIndex, MoveValue paiMoveValue, MoveValue popponentMoveValue, int pmoveCount) {
+    if(pmoveCount % 2 == 1)
+      this.currentGame.setPlayerTurn(1);
+    else
+      this.currentGame.setPlayerTurn(2);
     List<Checker> originalCheckers = this.copyCheckers(pcheckers);
     this.currentGame.setCheckersList(originalCheckers);
     Checker currentChecker = originalCheckers.get(pcheckerIndex);
@@ -71,9 +70,10 @@ public class EasyAI {
         } else {
           success = this.currentGame.virtualCapturePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
         }
-        if(success)
+        if(success) {
           this.recursiveMoveEvaluation(originalCheckers, pmoveCount-1, paiMoveValue, popponentMoveValue);
-        if (pmoveCount == 5 && (paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.valueDifference) {
+        }
+        if (pmoveCount == 5 && (paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.valueDifference && pcheckers.get(pcheckerIndex).getType() % 2 == 1) {
           paiMoveValue.valueDifference = paiMoveValue.moveValue - popponentMoveValue.moveValue;
           paiMoveValue.row = pcheckers.get(pcheckerIndex).getRowPosition() + i;
           paiMoveValue.column = pcheckers.get(pcheckerIndex).getColumnPosition() + j;
@@ -86,6 +86,10 @@ public class EasyAI {
   }
 
   public void recursiveMoveEvaluation(List<Checker> pcheckers, int pmoveCount, MoveValue paiMoveValue, MoveValue popponentMoveValue) {
+    if(pmoveCount % 2 == 1)
+      this.currentGame.setPlayerTurn(1);
+    else
+      this.currentGame.setPlayerTurn(2);
     if(pmoveCount > 0) {
       List<Checker> originalCheckers = this.copyCheckers(pcheckers);
       this.currentGame.setCheckersList(originalCheckers);
@@ -99,18 +103,18 @@ public class EasyAI {
             this.generateMoves(2,pcheckers, k, paiMoveValue, popponentMoveValue, pmoveCount);
           }
         }
-        if (this.evaluateMove(pcheckers) > popponentMoveValue.moveValue && pmoveCount == 1)
-          popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
+        if (this.evaluateMove(pcheckers) > paiMoveValue.moveValue)
+          paiMoveValue.moveValue = this.evaluateMove(pcheckers);
       }
     } else {
-      if (this.evaluateMove(pcheckers) > paiMoveValue.moveValue)
-        paiMoveValue.moveValue = this.evaluateMove(pcheckers);
-      System.out.println(testingVariable.row++);
+      if (this.evaluateMove(pcheckers) > popponentMoveValue.moveValue && pmoveCount == 1)
+        popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
     }
   }
 
   public void move() {
     this.currentGame.populateCheckers();
+    this.currentGame.setPlayerTurn(1);
     List<Checker> checkers = this.currentGame.getCheckersList();
     MoveValue aiMoveValue = new MoveValue();
     MoveValue opponentMoveValue = new MoveValue();
@@ -125,15 +129,18 @@ public class EasyAI {
         }
       }
     }
-    if(aiMoveValue.checkerToMove == null)
+    System.out.println(aiMoveValue.row);
+    System.out.println(aiMoveValue.column);
+    if(aiMoveValue.checkerToMove == null) {
       this.generateRandomMove();
-    else {
+      System.out.println("Random Generation");
+    }else {
       this.currentGame.populateCheckers();
-      System.out.println("AICheckerStats: " + aiMoveValue.checkerToMove.getRowPosition() + " " + aiMoveValue.checkerToMove.getColumnPosition());
-      System.out.println("MoveToStats: " + aiMoveValue.row + " " + aiMoveValue.column);
       Checker chosenChecker = this.currentGame.getCheckerInSpace(aiMoveValue.checkerToMove.getRowPosition(), aiMoveValue.checkerToMove.getColumnPosition());
+      System.out.println(chosenChecker.getRowPosition() + ", " + chosenChecker.getColumnPosition());
       this.currentGame.movePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
       this.currentGame.capturePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
+      System.out.println("Move Generation");
     }
     if(this.currentGame.getPlayerTurn() == 1) {
       this.currentGame.updatePlayerTurn();
@@ -145,7 +152,6 @@ public class EasyAI {
     this.currentGame.populateCheckers();
     List<Checker> pcheckers = this.currentGame.getCheckersList();
     boolean moveIsNotGenerated = true;
-    System.out.println("random");
     while (moveIsNotGenerated) {
       int randRow = rand.nextInt(8);
       int randCol = rand.nextInt(8);
@@ -163,9 +169,8 @@ public class EasyAI {
         } else if (this.currentGame.generalMoveIsAvailable(checker)) {
           for (int i = -1; i <= 1; i+=2) {
             for (int j = -1; j <= 1; j+=2) {
-              if (this.currentGame.specificMoveIsValid(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j)) {
-                this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
-                moveIsNotGenerated = false;
+              boolean success = this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
+              if(success) {
                 return true;
               }
             }
@@ -177,8 +182,8 @@ public class EasyAI {
   }
 
   public float evaluatePieceRatio(List<Checker> pcheckers) {
-    float aiCheckerCount = 0f;
-    float playerCheckerCount = 0f;
+    float aiCheckerCount = 1f;
+    float playerCheckerCount = 1f;
     for(int i = 0; i < pcheckers.size(); i++) {
       if(pcheckers.get(i).getType() % 2 == 1) {
         aiCheckerCount++;
@@ -190,8 +195,8 @@ public class EasyAI {
   }
 
   public float evaluateKingRatio(List<Checker> pcheckers) {
-    float aiCheckerCount = 0f;
-    float playerCheckerCount = 0f;
+    float aiCheckerCount = 1f;
+    float playerCheckerCount = 1f;
     for(int i = 0; i < pcheckers.size(); i++) {
       if(pcheckers.get(i).getType() == 3) {
         aiCheckerCount++;
@@ -203,8 +208,8 @@ public class EasyAI {
   }
 
   public float evaluateCentralPositionRatio(List<Checker> pcheckers) {
-    float aiCenterPieces = 0f;
-    float playerCenterPieces = 0f;
+    float aiCenterPieces = 1f;
+    float playerCenterPieces = 1f;
     for(int i = 0; i < pcheckers.size(); i++) {
       Checker checker = pcheckers.get(i);
       if(checker.getRowPosition() >= 2 && checker.getRowPosition() <= 5 && checker.getColumnPosition() >= 2 &&  checker.getColumnPosition() <= 5 ) {
@@ -229,7 +234,7 @@ public class EasyAI {
     float pieceRatio = this.evaluatePieceRatio(pcheckers);
     float centerPieceRatio = this.evaluateCentralPositionRatio(pcheckers);
     float kingRatio = this.evaluateKingRatio(pcheckers);
-    float moveRating = 150*kingRatio + 100*pieceRatio + 30*centerPieceRatio;
+    float moveRating = 200*kingRatio + 100*pieceRatio + 3*centerPieceRatio;
     return moveRating;
   }
 
@@ -240,88 +245,7 @@ public class EasyAI {
     return this.id;
   }
 
-  public String getName() {
-    return this.name;
-  }
-
   public Game getCurrentGame() {
     return this.currentGame;
   }
-
-  // public void attachGame(int pgameId) {
-  //   Integer attachedGameId;
-  //   try (Connection con = DB.sql2o.open()) {
-  //     attachedGameId = con.createQuery("SELECT gameId FROM easyAis_games WHERE aiId=:id AND gameId=:gameId")
-  //       .addParameter("id", this.id)
-  //       .addParameter("gameId", pgameId)
-  //       .executeAndFetchFirst(Integer.class);
-  //     if(attachedGameId == null) {
-  //       con.createQuery("INSERT INTO easyAis_games (aiId, gameId) VALUES (:aiId, :gameId)")
-  //         .addParameter("aiId", this.id)
-  //         .addParameter("gameId", pgameId)
-  //         .executeUpdate();
-  //     }
-  //   }
-  //   this.currentGame = Game.findById(pgameId);
-  // }
-
-  // public List<Integer> getGameIds() {
-  //   try (Connection con = DB.sql2o.open()) {
-  //     return con.createQuery("SELECT gameId FROM easyAis_games WHERE aiId=:id")
-  //       .addParameter("id", this.id)
-  //       .executeAndFetch(Integer.class);
-  //   }
-  // }
-  //
-  // public List<Game> getGames() {
-  //   List<Integer> gameIds = this.getGameIds();
-  //   List<Game> games = new ArrayList<>();
-  //   for (int i = 0; i < gameIds.size(); i++) {
-  //     games.add(Game.findById(gameIds.get(i)));
-  //   }
-  //   return games;
-  // }
-
-  /////////////////////////////////////////////////////////////////////////////
-  /// database Methods
-
-  public void save() {
-    try(Connection con = DB.sql2o.open()) {
-      this.id = (int) con.createQuery("INSERT INTO easyais (name) VALUES (:name)", true)
-        .addParameter("name", this.name)
-        .executeUpdate()
-        .getKey();
-    }
-  }
-
-  // @Override
-  // public boolean equals(Object otherAI) {
-  //   if(!(otherAI instanceof EasyAI)) {
-  //     return false;
-  //   } else {
-  //     EasyAI newAI = (EasyAI) otherAI;
-  //     return this.id == newAI.getId() &&
-  //            this.name == newAI.getName();
-  //   }
-  // }
-
-  /////////////////////////////////////////////////////////////////////////////
-  /// static Methods
-
-  // public static EasyAI findById(int pId, int pgameId) {
-  //   Game game;
-  //   EasyAI ai;
-  //   try (Connection con = DB.sql2o.open()) {
-  //     ai = con.createQuery("SELECT * FROM easyais WHERE id=:id")
-  //       .addParameter("id", pId)
-  //       .executeAndFetchFirst(EasyAI.class);
-  //     game = con.createQuery("SELECT * FROM games WHERE id=:id")
-  //       .addParameter("id", pgameId)
-  //       .executeAndFetchFirst(Game.class);
-  //   }
-  //   game.populateCheckers();
-  //   ai.updateGame(game);
-  //   return ai;
-  // }
-
 }

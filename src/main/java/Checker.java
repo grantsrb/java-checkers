@@ -75,6 +75,14 @@ public class Checker {
     }
   }
 
+  public void setToNull() {
+    this.id = 0;
+    this.type = 0;
+    this.rowPosition = 0;
+    this.columnPosition = 0;
+    this.gameId = 0;
+  }
+
   public void updatePosition(int rowPosition, int columnPosition) {
     this.rowPosition = rowPosition;
     this.columnPosition = columnPosition;
