@@ -6,12 +6,14 @@ import java.lang.Math;
 public class Game {
   private int playerCount;
   private int playerTurn;
+  private boolean saved;
   private List<Checker> checkers = new ArrayList<>();
   private int id;
 
   public Game(int pPlayerCount) {
     this.playerCount = pPlayerCount;
     this.playerTurn = 2;
+    this.saved = false;
     this.save();
     for (int i = 0; i < 8; i++) {
       for(int j = (i+1)%2; j < 8; j+=2) {
@@ -43,6 +45,10 @@ public class Game {
     return this.playerTurn;
   }
 
+  public boolean getSaved() {
+    return this.saved;
+  }
+
   public List<Integer> getUserIds() {
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery("SELECT userId FROM users_games WHERE gameId=:gameId")
@@ -52,12 +58,19 @@ public class Game {
   }
 
   public void attachUser(int pUserId) {
+    this.saved = true;
     try(Connection con = DB.sql2o.open()) {
       con.createQuery("INSERT INTO users_games (gameId, userId) VALUES (:gameId, :userId)")
         .addParameter("gameId", this.id)
         .addParameter("userId", pUserId)
         .executeUpdate();
+
+      con.createQuery("UPDATE games SET saved = :saved WHERE id = :id")
+        .addParameter("saved", this.saved)
+        .addParameter("id", this.id)
+        .executeUpdate();
     }
+
   }
 
   public List<User> getUsers() {
@@ -311,9 +324,10 @@ public class Game {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn) VALUES (:playerCount, :playerTurn)", true)
+      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn, saved) VALUES (:playerCount, :playerTurn, :saved)", true)
         .addParameter("playerCount", this.playerCount)
         .addParameter("playerTurn", this.playerTurn)
+        .addParameter("saved", this.saved)
         .executeUpdate()
         .getKey();
     }
@@ -326,6 +340,24 @@ public class Game {
         .executeUpdate();
       con.createQuery("DELETE FROM games WHERE id=:id")
         .addParameter("id", this.id)
+        .executeUpdate();
+    }
+  }
+
+  public static void deleteUnsaved() {
+    try(Connection con = DB.sql2o.open()) {
+      List<Integer> gameIds = new ArrayList<>();
+      gameIds = con.createQuery("SELECT id FROM games WHERE saved='f'")
+        .executeAndFetch(Integer.class);
+      for(Integer id : gameIds) {
+        con.createQuery("DELETE FROM users_games WHERE gameid = :gameid")
+          .addParameter("gameid", id)
+          .executeUpdate();
+        con.createQuery("DELETE FROM checkers WHERE gameId=:gameId")
+          .addParameter("gameId", id)
+          .executeUpdate();
+      }
+      con.createQuery("DELETE FROM games WHERE saved = 'f'")
         .executeUpdate();
     }
   }

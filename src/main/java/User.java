@@ -43,7 +43,10 @@ public class User {
 
   public List<Game> getGames() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM users_games WHERE userid = :id";
+      String sql = "SELECT games.* FROM users " +
+                   "JOIN users_games ON (users.id = users_games.userid) " +
+                   "JOIN games ON (users_games.gameid = games.id) " +
+                   "WHERE users.id = :id"; 
       return con.createQuery(sql)
         .addParameter("id", this.id)
         .executeAndFetch(Game.class);
