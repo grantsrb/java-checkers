@@ -111,7 +111,7 @@ public class App {
       return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
 
-    post("/user/:userid/game/:id", (request, response) -> {
+    get("/user/:userid/game/:id", (request, response) -> {
       int userId = Integer.parseInt(request.params("userid"));
       int gameId = Integer.parseInt(request.params("id"));
       Game game = Game.findById(gameId);
