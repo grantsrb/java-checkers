@@ -189,6 +189,19 @@ public class EasyAI {
     return aiCheckerCount/playerCheckerCount;
   }
 
+  public float evaluateKingRatio(List<Checker> pcheckers) {
+    float aiCheckerCount = 0f;
+    float playerCheckerCount = 0f;
+    for(int i = 0; i < pcheckers.size(); i++) {
+      if(pcheckers.get(i).getType() == 3) {
+        aiCheckerCount++;
+      } else if (pcheckers.get(i).getType() == 4) {
+        playerCheckerCount++;
+      }
+    }
+    return aiCheckerCount/playerCheckerCount;
+  }
+
   public float evaluateCentralPositionRatio(List<Checker> pcheckers) {
     float aiCenterPieces = 0f;
     float playerCenterPieces = 0f;
@@ -215,7 +228,8 @@ public class EasyAI {
   public float evaluateMove(List<Checker> pcheckers) {
     float pieceRatio = this.evaluatePieceRatio(pcheckers);
     float centerPieceRatio = this.evaluateCentralPositionRatio(pcheckers);
-    float moveRating = 100*pieceRatio + 30*centerPieceRatio;
+    float kingRatio = this.evaluateKingRatio(pcheckers);
+    float moveRating = 150*kingRatio + 100*pieceRatio + 30*centerPieceRatio;
     return moveRating;
   }
 
