@@ -1,26 +1,12 @@
 <div class="row">
-  <div id="taken" class="col-sm-3">
-    <div class="row">
-      <h2 id="captured">Captured Checkers</h2>
-      <div class="col-sm-6">
-        <h4>Red:</h4>
-        <ul>
-          #foreach($red in $redsTaken)
-           <button type="button" id = "takenRedCheckers" class="redChecker" disabled></button>
-          #end
-        </ul>
-      </div>
-      <div class="col-sm-6">
-        <h4>White:</h4>
-        <ul>
-          #foreach($white in $whitesTaken)
-           <button type="button" id="takenWhiteCheckers"class="whiteChecker" disabled></button>
-          #end
-        </ul>
-      </div>
-    </div>
+  <div id="taken" class="col-sm-2">
+    <ul>
+      #foreach($red in $redsTaken)
+       <button type="button" id = "takenRedCheckers" class="redChecker" disabled></button>
+      #end
+    </ul>
   </div>
-  <div id="board" class="col-sm-9 col-sm-offset-3 pull-right">
+  <div class="col-md-8">
     <table>
       #foreach($row in $rows)
         <tr>
@@ -80,13 +66,26 @@
       #end
     </table>
   </div>
+  <div class="col-sm-2">
+    <ul>
+      #foreach($white in $whitesTaken)
+       <button type="button" id="takenWhiteCheckers"class="whiteChecker" disabled></button>
+      #end
+    </ul>
+  </div>
 </div>
 
+<div class="row save-button">
 
-<form action="/checkers/$loggedInUser.getId()/$game.getId()/save" method="post">
-  <button type="submit" class="btn btn-success">Save Game</button>
-</form>
+  #if($gameOver)
+    <h1>You Lose</h1>
+  #end
 
-#if($gameOver)
-  <h1>You Lose</h1>
-#end
+  #if($game.getSaved() == false && $loggedInStatus == true)
+  <form action="/checkers/$loggedInUser.getId()/$game.getId()/save" method="post">
+    <button type="submit" class="btn btn-success btn-lg">Save Game</button>
+  </form>
+  #end
+
+
+</div>

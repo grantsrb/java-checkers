@@ -206,10 +206,10 @@ public class GameTest {
     User testUser = new User("cgrahams", "1234gogo");
     testUser.save();
     Game firstGame = new Game(2);
-    firstGame.attachUser(testUser.getId());
     Game secondGame = new Game(2);
+    secondGame.attachUser(testUser.getId());
     Game.deleteUnsaved();
-    assertEquals(Game.all().get(1).getId(), null);
+    assertEquals(Game.all().get(0).getId(), secondGame.getId());
     assertEquals(Game.all().size(), 1);
   }
 

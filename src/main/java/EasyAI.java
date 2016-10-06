@@ -230,11 +230,19 @@ public class EasyAI {
     return aiCenterPieces/playerCenterPieces;
   }
 
+  public float evaluateWinningStroke(Game pgame) {
+    if(pgame.gameIsOver())
+      return 1f;
+    else
+      return 0f;
+  }
+
   public float evaluateMove(List<Checker> pcheckers) {
     float pieceRatio = this.evaluatePieceRatio(pcheckers);
     float centerPieceRatio = this.evaluateCentralPositionRatio(pcheckers);
     float kingRatio = this.evaluateKingRatio(pcheckers);
-    float moveRating = 200*kingRatio + 100*pieceRatio + 3*centerPieceRatio;
+    float winningStroke = this.evaluateWinningStroke(this.currentGame);
+    float moveRating = 10000*winningStroke + 200*kingRatio + 100*pieceRatio + 3*centerPieceRatio;
     return moveRating;
   }
 
