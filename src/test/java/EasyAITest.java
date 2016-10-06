@@ -12,23 +12,30 @@ public class EasyAITest {
   @Before
   public void initialize() {
     testGame = new Game(1);
+    testGame.updatePlayerTurn();
     testAI = new EasyAI("Satchel", testGame.getId());
   }
 
   @Rule
   public DatabaseRule database = new DatabaseRule();
 
-  @Test
-  public void generateRandomMove_makesARandomMoveForAiCheckers_void() {
-    testAI.generateRandomMove();
-    for(int i = 0; i < testGame.getCheckersList().size(); i++) {
-      System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());
-    }
-    assertEquals(null, 1);
-  }
+  // @Test
+  // public void generateRandomMove_makesARandomMoveForAiCheckers_void() {
+  //   testAI.generateRandomMove();
+  //   for(int i = 0; i < testGame.getCheckersList().size(); i++) {
+  //     System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());
+  //   }
+  //   assertEquals(null, 1);
+  // }
 
   @Test
   public void generateMove_generatesMove_true() {
+    testAI.move();
+    for(int i = 0; i < testGame.getCheckersList().size(); i++) {
+      System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());
+    }
+    Checker checker = testAI.getCurrentGame().getCheckerInSpace(5,2);
+    testAI.getCurrentGame().movePiece(checker, 4,3);
     testAI.move();
     for(int i = 0; i < testGame.getCheckersList().size(); i++) {
       System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());

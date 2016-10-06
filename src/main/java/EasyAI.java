@@ -14,14 +14,14 @@ public class EasyAI {
     public float moveValue;
     public int row;
     public int column;
-    public float maxDifference;
+    public float valueDifference;
     public Checker checkerToMove;
 
     public MoveValue() {
       this.moveValue = 0f;
       this.row = -1;
       this.column = -1;
-      this.maxDifference = 0f;
+      this.valueDifference = 0f;
       this.checkerToMove = null;
     }
   }
@@ -73,10 +73,10 @@ public class EasyAI {
         }
         if(success)
           this.recursiveMoveEvaluation(originalCheckers, pmoveCount-1, paiMoveValue, popponentMoveValue);
-        if (pmoveCount == 4 && (paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.maxDifference) {
-          paiMoveValue.maxDifference = paiMoveValue.moveValue - popponentMoveValue.moveValue;
-          paiMoveValue.row = currentChecker.getRowPosition() + i;
-          paiMoveValue.column = currentChecker.getColumnPosition() + j;
+        if (pmoveCount == 5 && (paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.valueDifference) {
+          paiMoveValue.valueDifference = paiMoveValue.moveValue - popponentMoveValue.moveValue;
+          paiMoveValue.row = pcheckers.get(pcheckerIndex).getRowPosition() + i;
+          paiMoveValue.column = pcheckers.get(pcheckerIndex).getColumnPosition() + j;
           paiMoveValue.checkerToMove = pcheckers.get(pcheckerIndex);
         }
         originalCheckers = this.copyCheckers(pcheckers);
@@ -99,10 +99,10 @@ public class EasyAI {
             this.generateMoves(2,pcheckers, k, paiMoveValue, popponentMoveValue, pmoveCount);
           }
         }
+        if (this.evaluateMove(pcheckers) > popponentMoveValue.moveValue && pmoveCount == 1)
+          popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
       }
     } else {
-      if (this.evaluateMove(pcheckers) > popponentMoveValue.moveValue)
-        popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
       if (this.evaluateMove(pcheckers) > paiMoveValue.moveValue)
         paiMoveValue.moveValue = this.evaluateMove(pcheckers);
       System.out.println(testingVariable.row++);
@@ -129,6 +129,8 @@ public class EasyAI {
       this.generateRandomMove();
     else {
       this.currentGame.populateCheckers();
+      System.out.println("AICheckerStats: " + aiMoveValue.checkerToMove.getRowPosition() + " " + aiMoveValue.checkerToMove.getColumnPosition());
+      System.out.println("MoveToStats: " + aiMoveValue.row + " " + aiMoveValue.column);
       Checker chosenChecker = this.currentGame.getCheckerInSpace(aiMoveValue.checkerToMove.getRowPosition(), aiMoveValue.checkerToMove.getColumnPosition());
       this.currentGame.movePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
       this.currentGame.capturePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
@@ -192,14 +194,14 @@ public class EasyAI {
     float playerCenterPieces = 0f;
     for(int i = 0; i < pcheckers.size(); i++) {
       Checker checker = pcheckers.get(i);
-      if(checker.getRowPosition() >= 2 &&  checker.getRowPosition() <= 5 && checker.getColumnPosition() >= 2 &&  checker.getColumnPosition() <= 5 ) {
+      if(checker.getRowPosition() >= 2 && checker.getRowPosition() <= 5 && checker.getColumnPosition() >= 2 &&  checker.getColumnPosition() <= 5 ) {
         if(checker.getType() % 2 == 1) {
-          if(checker.getRowPosition() >= 3 &&  checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 &&  checker.getColumnPosition() <= 4)
+          if(checker.getRowPosition() >= 3 && checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 && checker.getColumnPosition() <= 4)
             aiCenterPieces += 2;
           else
             aiCenterPieces++;
         } else {
-          if(checker.getRowPosition() >= 3 &&  checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 &&  checker.getColumnPosition() <= 4)
+          if(checker.getRowPosition() >= 3 && checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 && checker.getColumnPosition() <= 4)
             playerCenterPieces += 2;
           else
             playerCenterPieces++;
