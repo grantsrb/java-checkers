@@ -31,7 +31,7 @@ public class EasyAITest {
   public void generateMove_generatesMove_true() {
     testAI.move();
     for(int i = 0; i < testGame.getCheckersList().size(); i++) {
-      System.out.println(testGame.getCheckersList().get(i).getRowPosition() + " " + testGame.getCheckersList().get(i).getColumnPosition());
+      System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());
     }
     assertEquals(null, 1);
   }
