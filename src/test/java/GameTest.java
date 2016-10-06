@@ -209,7 +209,9 @@ public class GameTest {
     firstGame.attachUser(testUser.getId());
     Game secondGame = new Game(2);
     Game.deleteUnsaved();
-    System.out.println(Game.all().get(0));
+    System.out.println(Game.all().get(0).getId()); //check if gamelist errors
+    System.out.println(firstGame.getId());
+    assertEquals(Game.all().get(1).getId(), null);
     assertEquals(Game.all().size(), 1);
   }
 

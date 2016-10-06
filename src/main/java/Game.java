@@ -65,8 +65,9 @@ public class Game {
         .addParameter("userId", pUserId)
         .executeUpdate();
 
-      con.createQuery("INSERT INTO games (saved) VALUES (:saved)")
+      con.createQuery("UPDATE games SET saved = :saved WHERE id = :id")
         .addParameter("saved", this.saved)
+        .addParameter("id", this.id)
         .executeUpdate();
     }
 
@@ -308,8 +309,19 @@ public class Game {
 
   public static void deleteUnsaved() {
     try(Connection con = DB.sql2o.open()) {
-      con.createQuery("DELETE FROM games WHERE saved = false")
-      .executeUpdate();
+      List<Integer> gameIds = new ArrayList<>();
+      gameIds = con.createQuery("SELECT id FROM games WHERE saved='f'")
+        .executeAndFetch(Integer.class);
+      for(Integer id : gameIds) {
+        con.createQuery("DELETE FROM users_games WHERE gameid = :gameid")
+          .addParameter("gameid", id)
+          .executeUpdate();
+        con.createQuery("DELETE FROM checkers WHERE gameId=:gameId")
+          .addParameter("gameId", id)
+          .executeUpdate();
+      }
+      con.createQuery("DELETE FROM games WHERE saved = 'f'")
+        .executeUpdate();
     }
   }
 

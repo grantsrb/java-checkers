@@ -24,15 +24,20 @@ public class App {
 
     post("/game/new", (request, response) -> {
       int players = Integer.parseInt(request.queryParams("players"));
+      Game.deleteUnsaved();
       Game newGame = new Game(players);
       return new ModelAndView(boardModel(newGame), layout);
     }, new VelocityTemplateEngine());
 
-    // post("/checkers/:userid/:gameid/save", (request, response) -> {
-    //   Map<String, Object> model = new HashMap<>();
-    //   User user = User.find(Integer.parseInt(request.queryParams("userid")));
-    //
-    // }, new VelocityTemplateEngine());
+    post("/checkers/:userid/:gameid/save", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      User user = User.find(Integer.parseInt(request.params("userid")));
+      Game game = Game.findById(Integer.parseInt(request.params("gameid")));
+      game.attachUser(user.getId());
+      Game.deleteUnsaved();
+      response.redirect("/user-page");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
     post("/moves/legal", (request, response) -> {
       List<Integer> legalRows = new ArrayList<Integer>();
@@ -85,6 +90,7 @@ public class App {
         User newUser = User.login(userName,password);
         User.loggedIn = true;
         User.loggedInUser = newUser;
+        model.put("games", User.loggedInUser.getGames());
         model.put("loggedInStatus", User.loggedIn);
         model.put("loggedInUser", User.loggedInUser);
         model.put("template", "templates/user-page.vtl");
@@ -98,11 +104,19 @@ public class App {
 
     get("/user-page",(request,response) -> { // Directs to user page
       Map<String,Object> model = new HashMap<>();
+      model.put("games", User.loggedInUser.getGames());
       model.put("loggedInStatus", User.loggedIn);
       model.put("loggedInUser", User.loggedInUser);
       model.put("template", "templates/user-page.vtl");
       return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
+
+    post("/user/:userid/game/:id", (request, response) -> {
+      int userId = Integer.parseInt(request.params("userid"));
+      int gameId = Integer.parseInt(request.params("id"));
+      Game game = Game.findById(gameId);
+      return new ModelAndView(boardModel(game), layout);
+    }, new VelocityTemplateEngine());
 
     post("/new-account", (request,response) -> {
       Map<String,Object> model = new HashMap<>();
@@ -139,9 +153,12 @@ public class App {
     Map<String,Object> model = new HashMap<>();
     model.put("playerTurn", pGame.getPlayerTurn());
     model.put("checkers", pGame.getCheckers());
+    model.put("game", pGame);
     model.put("rows", board);
     model.put("columns", board);
     model.put("gameOver", pGame.gameIsOver());
+    model.put("loggedInStatus", User.loggedIn);
+    model.put("loggedInUser", User.loggedInUser);
     model.put("template", "templates/checkers.vtl");
     return model;
   }

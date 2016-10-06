@@ -5,10 +5,20 @@
   <h4>Saved Games:</h4>
   <ul>
     #foreach($game in $games)
-      <li>Game: ID # $game.getId()</li>
+      <li><a href="/user/$loggedInUser.getId()/game/$game.getId()">Game: ID # $game.getId()</a></li>
     #end
   </ul>
 #end
+
+<div class="btn-group" role="group">
+  <form action="/game/new" method="post">
+    <button type="submit" name="players" value="1" class="btn btn-danger">1 Player</button>
+  </form>
+
+  <form action="/game/new" method="post">
+    <button type="submit" name="players" value="2" class="btn btn-success">2 Player</button>
+  </form>
+</div>
 
 <form action="/logout" method="post">
     <button type="submit" class="btn btn-danger">Logout</button>
