@@ -1,6 +1,62 @@
-#board {
-  margin-top: 5%;
-  min-width: 100%;
+body {
+  background-color: #0074D9;
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#layout-container {
+  padding: 2% 0;
+  background-color: #DDDDDD;
+  min-height: 1200px;
+}
+
+.player-buttons {
+  text-align: center;
+}
+
+.user-btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  margin-left: 5%;
+}
+
+.user-info-row {
+  text-align: center;
+}
+
+#nav-buttons {
+  text-align: center;
+  display: block;
+}
+
+.save-button {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.nav-btn {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.nav {
+  margin-left: 17%;
+}
+
+.container {
+  min-height: 100%;
+  margin-top: 10px;
+  border: solid black 2px;
+  border-radius: 20px;
+}
+
+table#board {
+  margin-left: 17%;
+  max-width: 100%;
   min-height: auto;
 }
 
@@ -41,6 +97,11 @@
 
 .glyphicon-education {
   font-size: 2.5em;
+}
+
+.jumbotron {
+  text-align: center;
+  font-family: 'VT323', monospace;
 }
 
 /*#logout {

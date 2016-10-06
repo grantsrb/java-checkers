@@ -1,6 +1,6 @@
 <div class="row">
-  <div id="board" class="col-md-6 col-md-offset-3">
-    <table>
+  <div class="col-md-10">
+    <table id="board">
       #foreach($row in $rows)
         <tr>
           #foreach($column in $columns)
@@ -61,11 +61,17 @@
   </div>
 </div>
 
+<div class="row save-button">
 
-<form action="/checkers/$loggedInUser.getId()/$game.getId()/save" method="post">
-  <button type="submit" class="btn btn-success">Save Game</button>
-</form>
+  #if($gameOver)
+    <h1>You Lose</h1>
+  #end
+  
+  #if($game.getSaved() == false && $loggedInStatus == true)
+  <form action="/checkers/$loggedInUser.getId()/$game.getId()/save" method="post">
+    <button type="submit" class="btn btn-success btn-lg">Save Game</button>
+  </form>
+  #end
 
-#if($gameOver)
-  <h1>You Lose</h1>
-#end
+
+</div>
