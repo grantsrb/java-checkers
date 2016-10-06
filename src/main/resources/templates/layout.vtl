@@ -9,39 +9,25 @@
   </head>
   <body>
     <div class="container">
-      <div class="nav">
-        <nav class="navbar navbar-light bg-faded">
-          <a class="navbar-brand" href="#">Checkers</a>
-          <div class="btn-group" role="group">
-            <a href="/"><button class="btn btn-default">Home</button></a>
-            <a href="/about"><button class="btn btn-default">About</button></a>
+      <nav class="navbar navbar-light bg-faded">
+        <ul class="nav navbar-nav">
+          <li class="nav-item active">
+            <a href="/" class="btn btn-default">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a href="/about" class="btn btn-default">About</a>
+          </li>
             #if($loggedInStatus != true)
-              <a href="/login"><button class="btn btn-default">Login</button></a>
-            #else
-              <form action="/logout" method="post">
-                  <button type="submit" class="btn btn-default">Logout</button>
-              </form>
-            #end
-          </div>
-          <!-- <ul class="nav navbar-nav">
             <li class="nav-item active">
-              <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
-            </li>
-            #if($loggedInStatus != true)
-            <li class="nav-item pull-xs-right">
-              <a class="nav-link" href="/login">Login</a>
+              <a href="/login" class="btn btn-default">Login</a>
             </li>
             #else
-            <li class="nav-item pull-xs-right">
-
+            <li class="nav-item active">
+              <a href="/user-page" class="btn btn-default">$loggedInUser.getUsername()'s Account</a>
             </li>
             #end
-          </ul> -->
-        </nav>
-      </div>
+          </ul>
+      </nav>
       #parse( $template )
     </div>
   </body>

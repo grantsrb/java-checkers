@@ -189,4 +189,28 @@ public class GameTest {
     assertEquals(null, testGame.getCheckerInSpace(4,3));
   }
 
+  @Test
+  public void save_savesGameIntoUsersGamesJoinTable_true() {
+    User testUser = new User("cgrahams", "1234gogo");
+    testUser.save();
+    Game firstGame = new Game(2);
+    firstGame.attachUser(testUser.getId());
+    Game secondGame = new Game(2);
+    secondGame.attachUser(testUser.getId());
+    assertTrue(testUser.getGames().get(0).equals(firstGame));
+    assertTrue(testUser.getGames().get(1).equals(secondGame));
+  }
+
+  @Test
+  public void deleteUnsaved_deletesAllUnassignedGames_true() {
+    User testUser = new User("cgrahams", "1234gogo");
+    testUser.save();
+    Game firstGame = new Game(2);
+    firstGame.attachUser(testUser.getId());
+    Game secondGame = new Game(2);
+    Game.deleteUnsaved();
+    assertEquals(Game.all().get(1).getId(), null);
+    assertEquals(Game.all().size(), 1);
+  }
+
 }

@@ -14,7 +14,7 @@ public class DatabaseRule extends ExternalResource {
       con.createQuery("DELETE FROM games *").executeUpdate();
       con.createQuery("DELETE FROM users *").executeUpdate();
       con.createQuery("DELETE FROM checkers *").executeUpdate();
-      con.createQuery("DELETE FROM easyais *").executeUpdate();
+      //con.createQuery("DELETE FROM easyais *").executeUpdate();
     }
   }
 

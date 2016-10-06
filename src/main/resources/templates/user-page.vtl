@@ -1,13 +1,25 @@
-<h1>LOGGED IN</h1>
-
 <h2>$loggedInUser.getUsername()'s Account</h2>
-#if($loggedInUser.getGames().size() < 1)
+#if($games.size() < 1)
   <h4>You have no saved games!</h4>
 #else
   <h4>Saved Games:</h4>
   <ul>
-    #foreach($game in $loggedInUser.getGames())
-      <li>Game: ID # $game.getId()</li>
+    #foreach($game in $games)
+      <li><a href="/user/$loggedInUser.getId()/game/$game.getId()">Game: ID # $game.getId()</a></li>
     #end
   </ul>
 #end
+
+<div class="btn-group" role="group">
+  <form action="/game/new" method="post">
+    <button type="submit" name="players" value="1" class="btn btn-danger">1 Player</button>
+  </form>
+
+  <form action="/game/new" method="post">
+    <button type="submit" name="players" value="2" class="btn btn-success">2 Player</button>
+  </form>
+</div>
+
+<form action="/logout" method="post">
+    <button type="submit" class="btn btn-danger">Logout</button>
+</form>
