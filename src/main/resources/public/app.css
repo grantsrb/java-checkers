@@ -1,8 +1,13 @@
 body {
-  background-color: #0074D9;
+  background: #0074D9; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(#0074D9, #ccf2ff); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#0074D9, #ccf2ff); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#0074D9, #ccf2ff); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#0074D9, #ccf2ff); /* Standard syntax (must be last) */
   background-size: cover;
   background-repeat: no-repeat;
   font-family: 'Ubuntu', sans-serif;
+  padding-bottom: 5%;
 }
 
 #layout-container {
@@ -21,7 +26,12 @@ body {
 }
 
 .user-info {
-  margin-left: 5%;
+  margin-left: 2%;
+}
+
+.user-info li {
+  list-style: none;
+  text-indent: -50px;
 }
 
 .user-info-row {
