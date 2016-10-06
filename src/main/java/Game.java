@@ -75,6 +75,10 @@ public class Game {
     this.checkers = plist;
   }
 
+  public List<Checker> getCheckersList() {
+    return this.checkers;
+  }
+
   public List<Checker> getCheckers() {
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery("SELECT * FROM checkers WHERE gameId=:gameId")
@@ -250,10 +254,13 @@ public class Game {
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public void movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public boolean movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.updatePlayerTurn();
+      return true;
+    } else {
+      return false;
     }
   }
 

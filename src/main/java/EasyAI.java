@@ -2,6 +2,7 @@ import org.sql2o.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.Math;
+import java.util.Random;
 
 public class EasyAI {
   private Game currentGame;
@@ -9,12 +10,18 @@ public class EasyAI {
   private int id;
 
   private class MoveValue{
-    public String player;
     public float moveValue;
+    public int row;
+    public int column;
+    public float maxDifference;
+    public Checker checkerToMove;
 
-    public MoveValue(String name) {
-      this.player = name;
+    public MoveValue() {
       this.moveValue = 0f;
+      this.row = -1;
+      this.column = -1;
+      this.maxDifference = 0f;
+      this.checkerToMove = null;
     }
   }
 
@@ -39,116 +46,126 @@ public class EasyAI {
     return checkerCopies;
   }
 
-  public void recursiveMoveEvaluation(List<Checker> pcheckers, int moveCount, MoveValue paiMoveValue, MoveValue popponentMoveValue) {
-    float moveValue;
-    if(moveCount > 0) {
+  public Checker getCheckerByCoordinates(int prow, int pcol) {
+    for (int i = 0; i < this.currentGame.getCheckersList().size(); i++) {
+      Checker checker = this.currentGame.getCheckersList().get(i);
+      if(checker.getRowPosition() == prow && checker.getColumnPosition() == pcol) {
+        return checker;
+      }
+    }
+    return null;
+  }
+
+  public void generateMoves(int range, List<Checker> pcheckers, int pcheckerIndex, MoveValue paiMoveValue, MoveValue popponentMoveValue, int pmoveCount) {
+    List<Checker> originalCheckers = this.copyCheckers(pcheckers);
+    this.currentGame.setCheckersList(originalCheckers);
+    Checker currentChecker = originalCheckers.get(pcheckerIndex);
+    for (int i = -range; i <= range; i+=2*range) {
+      for (int j = -range; j <= range; j+=2*range) {
+        boolean success;
+        if(range == 1)
+          success = this.currentGame.virtualMovePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
+        else
+          success = this.currentGame.virtualCapturePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
+        if(success)
+          this.recursiveMoveEvaluation(originalCheckers, pmoveCount, paiMoveValue, popponentMoveValue);
+        if ((paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.maxDifference) {
+          paiMoveValue.maxDifference = paiMoveValue.moveValue - popponentMoveValue.moveValue;
+          paiMoveValue.row = currentChecker.getRowPosition() + i;
+          paiMoveValue.column = currentChecker.getColumnPosition() + j;
+          paiMoveValue.checkerToMove = pcheckers.get(pcheckerIndex);
+        }
+        originalCheckers = this.copyCheckers(pcheckers);
+        currentChecker = originalCheckers.get(pcheckerIndex);
+      }
+    }
+  }
+
+  public void recursiveMoveEvaluation(List<Checker> pcheckers, int pmoveCount, MoveValue paiMoveValue, MoveValue popponentMoveValue) {
+    if(pmoveCount > 0) {
       for (int k = 0; k < pcheckers.size(); k++) {
-        List<Checker> originalCheckers = this.copyCheckers(pcheckers);
-        this.currentGame.setCheckersList(originalCheckers);
-        Checker currentChecker = originalCheckers.get(k);
+        Checker currentChecker = pcheckers.get(k);
         if(currentChecker.getType() % 2 == this.currentGame.getPlayerTurn() % 2) {
           if(this.currentGame.generalMoveIsAvailable(currentChecker)) {
-            for (int i = -1; i <= 1; i+=2) {
-              for (int j = -1; j <= 1; j+=2) {
-                boolean success = this.currentGame.virtualMovePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
-                if(success)
-                  this.recursiveMoveEvaluation(originalCheckers, moveCount-1, paiMoveValue, popponentMoveValue);
-                originalCheckers = this.copyCheckers(pcheckers);
-                currentChecker = originalCheckers.get(k);
-              }
-            }
+            generateMoves(1,pcheckers, k, paiMoveValue, popponentMoveValue, pmoveCount);
           }
-        }
-        if(this.currentGame.generalCaptureIsAvailable(currentChecker)) {
-          for (int i = -2; i <= 2; i+=4) {
-            for (int j = -2; j <= 2; j+=4) {
-              boolean success = this.currentGame.virtualCapturePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
-              if(success)
-                this.recursiveMoveEvaluation(originalCheckers, moveCount-1, paiMoveValue, popponentMoveValue);
-              originalCheckers = this.copyCheckers(pcheckers);
-              currentChecker = originalCheckers.get(k);
-            }
+          if(this.currentGame.generalCaptureIsAvailable(currentChecker)) {
+            generateMoves(2,pcheckers, k, paiMoveValue, popponentMoveValue, pmoveCount);
           }
         }
       }
-    } else if (moveCount == 1) {
+    } else {
       if (this.evaluateMove(pcheckers) > popponentMoveValue.moveValue)
         popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
-    } else {
       if (this.evaluateMove(pcheckers) > paiMoveValue.moveValue)
         paiMoveValue.moveValue = this.evaluateMove(pcheckers);
     }
   }
 
-  public void generateMove(List<Checker> pcheckers) {
-    int maxEvaluationRow = 3;
-    int maxEvaluationColumn = 0;
-    Checker maxEvaluationChecker = this.currentGame.getCheckerInSpace(2,1);
-    int evaluation = 0;
-    int evaluationRow = 0;
-    int evaluationColumn = 0;
-    float maxDifference = 0f;
-    MoveValue aiMoveValue = new MoveValue("ai");
-    MoveValue opponentMoveValue = new MoveValue("opponent");
+  public void move() {
+    this.currentGame.populateCheckers();
+    List<Checker> pcheckers = this.currentGame.getCheckersList();
+    MoveValue aiMoveValue = new MoveValue();
+    MoveValue opponentMoveValue = new MoveValue();
     for (int k = 0; k < pcheckers.size(); k++) {
-      List<Checker> originalCheckers = this.copyCheckers(pcheckers);
-      this.currentGame.setCheckersList(originalCheckers);
-      Checker currentChecker = originalCheckers.get(k);
+      Checker currentChecker = pcheckers.get(k);
       if(currentChecker.getType() % 2 == this.currentGame.getPlayerTurn() % 2) {
         if(this.currentGame.generalMoveIsAvailable(currentChecker)) {
-          for (int i = -1; i <= 1; i+=2) {
-            for (int j = -1; j <= 1; j+=2) {
-              evaluationRow = currentChecker.getRowPosition()+i;
-              evaluationColumn = currentChecker.getColumnPosition()+j;
-              boolean success = this.currentGame.virtualMovePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
-              if(success)
-                this.recursiveMoveEvaluation(originalCheckers, 4, aiMoveValue, opponentMoveValue);
-              if ((aiMoveValue.moveValue - opponentMoveValue.moveValue) > maxDifference) {
-                maxDifference = aiMoveValue.moveValue - opponentMoveValue.moveValue;
-                maxEvaluationRow = evaluationRow;
-                maxEvaluationColumn = evaluationColumn;
-                maxEvaluationChecker = pcheckers.get(k);
-                System.out.println("Hey");
-                System.out.println(maxEvaluationChecker.getRowPosition() + " " + maxEvaluationChecker.getColumnPosition());
-                System.out.println(maxEvaluationRow + " " + maxEvaluationColumn);
-                System.out.println("Ho");
-              }
-              originalCheckers = this.copyCheckers(pcheckers);
-              currentChecker = originalCheckers.get(k);
-            }
-          }
+          generateMoves(1,pcheckers, k, aiMoveValue, opponentMoveValue, 4);
         }
-      }
-      if(this.currentGame.generalCaptureIsAvailable(currentChecker)) {
-        for (int i = -2; i <= 2; i+=4) {
-          for (int j = -2; j <= 2; j+=4) {
-            evaluationRow = currentChecker.getRowPosition()+i;
-            evaluationColumn = currentChecker.getColumnPosition()+j;
-            boolean success = this.currentGame.virtualCapturePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
-            if(success)
-              this.recursiveMoveEvaluation(originalCheckers, 4, aiMoveValue, opponentMoveValue);
-            if ((aiMoveValue.moveValue - opponentMoveValue.moveValue) > maxDifference) {
-              System.out.println("Yo");
-              maxDifference = aiMoveValue.moveValue - opponentMoveValue.moveValue;
-              maxEvaluationRow = evaluationRow;
-              maxEvaluationColumn = evaluationColumn;
-              maxEvaluationChecker = pcheckers.get(k);
-            }
-            originalCheckers = this.copyCheckers(pcheckers);
-            currentChecker = originalCheckers.get(k);
-          }
+        if(this.currentGame.generalCaptureIsAvailable(currentChecker)) {
+          generateMoves(2,pcheckers, k, aiMoveValue, opponentMoveValue, 4);
         }
       }
     }
-    System.out.println("Fey");
-    System.out.println(maxEvaluationChecker.getRowPosition() + " " + maxEvaluationChecker.getColumnPosition());
-    System.out.println(maxEvaluationRow + " " + maxEvaluationColumn);
-    System.out.println("Fo");
-    this.currentGame.movePiece(maxEvaluationChecker, maxEvaluationRow, maxEvaluationColumn);
-    this.currentGame.capturePiece(maxEvaluationChecker, maxEvaluationRow, maxEvaluationColumn);
+    if(aiMoveValue.checkerToMove == null)
+      this.generateRandomMove();
+    else {
+      this.currentGame.populateCheckers();
+      Checker chosenChecker = this.currentGame.getCheckerInSpace(aiMoveValue.checkerToMove.getRowPosition(), aiMoveValue.checkerToMove.getColumnPosition());
+      this.currentGame.movePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
+      this.currentGame.capturePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
+    }
     if(this.currentGame.getPlayerTurn() == 1) {
       this.currentGame.updatePlayerTurn();
     }
+  }
+
+  public boolean generateRandomMove() {
+    Random rand = new Random();
+    this.currentGame.populateCheckers();
+    List<Checker> pcheckers = this.currentGame.getCheckersList();
+    boolean moveIsNotGenerated = true;
+    while (moveIsNotGenerated) {
+      int randRow = rand.nextInt(8);
+      int randCol = rand.nextInt(8);
+      Checker checker = this.getCheckerByCoordinates(randRow, randCol);
+      if(checker != null && checker.getType() % 2 == 1) {
+        if(this.currentGame.generalCaptureIsAvailable(checker)) {
+          for (int i = -2; i <= 2; i+=4) {
+            for (int j = -2; j <= 2; j+=4) {
+              boolean success = this.currentGame.capturePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
+              if (success) {
+                return true;
+              }
+            }
+          }
+        } else if (this.currentGame.generalMoveIsAvailable(checker)) {
+          for (int i = -1; i <= 1; i+=2) {
+            for (int j = -1; j <= 1; j+=2) {
+              System.out.println("Before: " + checker.getRowPosition() + " " + checker.getColumnPosition());
+              if (this.currentGame.specificMoveIsValid(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j)) {
+                this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
+                moveIsNotGenerated = false;
+                System.out.println("After: " + checker.getRowPosition() + " " + checker.getColumnPosition());
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return true;
   }
 
   public float evaluatePieceRatio(List<Checker> pcheckers) {

@@ -19,11 +19,19 @@ public class EasyAITest {
   public DatabaseRule database = new DatabaseRule();
 
   @Test
+  public void generateRandomMove_makesARandomMoveForAiCheckers_void() {
+    testAI.generateRandomMove();
+    for(int i = 0; i < testGame.getCheckersList().size(); i++) {
+      System.out.println(testAI.getCurrentGame().getCheckersList().get(i).getRowPosition() + " " + testAI.getCurrentGame().getCheckersList().get(i).getColumnPosition());
+    }
+    assertEquals(null, 1);
+  }
+
+  @Test
   public void generateMove_generatesMove_true() {
-    List<Checker> gameCheckers = testGame.getCheckers();
-    testAI.generateMove(gameCheckers);
-    for(int i = 0; i < gameCheckers.size(); i++) {
-      System.out.println(gameCheckers.get(i).getRowPosition() + " " + gameCheckers.get(i).getColumnPosition());
+    testAI.move();
+    for(int i = 0; i < testGame.getCheckersList().size(); i++) {
+      System.out.println(testGame.getCheckersList().get(i).getRowPosition() + " " + testGame.getCheckersList().get(i).getColumnPosition());
     }
     assertEquals(null, 1);
   }
