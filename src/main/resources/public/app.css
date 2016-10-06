@@ -4,6 +4,10 @@
   min-height: auto;
 }
 
+#captured {
+  text-align: center;
+}
+
 .black {
   background-color: black;
   width: 100px;

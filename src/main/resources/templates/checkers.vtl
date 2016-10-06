@@ -1,20 +1,26 @@
 <div class="row">
-  <div id="board" class="col-md-3">
-    <table>
-      <tr>
-        <td id="redTaken">
-          Red Taken
-        </td>
-        <td id="whiteTaken">
-          White Taken
-        </td>
-      </tr>
-      <tr>
-
-      </tr>
-    </table>
+  <div id="taken" class="col-sm-3">
+    <div class="row">
+      <h2 id="captured">Captured Checkers</h2>
+      <div class="col-sm-6">
+        <h4>Red:</h4>
+        <ul>
+          #foreach($red in $redsTaken)
+           <button type="button" id = "takenRedCheckers" class="redChecker" disabled></button>
+          #end
+        </ul>
+      </div>
+      <div class="col-sm-6">
+        <h4>White:</h4>
+        <ul>
+          #foreach($white in $whitesTaken)
+           <button type="button" id="takenWhiteCheckers"class="whiteChecker" disabled></button>
+          #end
+        </ul>
+      </div>
+    </div>
   </div>
-  <div id="board" class="col-md-6 col-md-offset-3">
+  <div id="board" class="col-sm-9 col-sm-offset-3 pull-right">
     <table>
       #foreach($row in $rows)
         <tr>

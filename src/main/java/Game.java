@@ -49,6 +49,14 @@ public class Game {
     return this.playerTurn;
   }
 
+  public int getTakenRedCheckers() {
+    return this.takenRedCheckers;
+  }
+
+  public int getTakenWhiteCheckers() {
+    return this.takenWhiteCheckers;
+  }
+
   public boolean getSaved() {
     return this.saved;
   }
@@ -109,6 +117,26 @@ public class Game {
     try(Connection con = DB.sql2o.open()) {
       con.createQuery("UPDATE games SET playerTurn=:playerTurn WHERE id=:id")
         .addParameter("playerTurn", this.playerTurn)
+        .addParameter("id", this.id)
+        .executeUpdate();
+    }
+  }
+
+  public void updateTakenRedCheckers() {
+    this.takenRedCheckers++;
+    try(Connection con = DB.sql2o.open()) {
+      con.createQuery("UPDATE games SET takenRedCheckers = :takenRedCheckers WHERE id = :id")
+        .addParameter("takenRedCheckers", this.takenRedCheckers)
+        .addParameter("id", this.id)
+        .executeUpdate();
+    }
+  }
+
+  public void updateTakenWhiteCheckers() {
+    this.takenWhiteCheckers++;
+    try(Connection con = DB.sql2o.open()) {
+      con.createQuery("UPDATE games SET takenWhiteCheckers = :takenWhiteCheckers WHERE id = :id")
+        .addParameter("takenWhiteCheckers", this.takenWhiteCheckers)
         .addParameter("id", this.id)
         .executeUpdate();
     }
@@ -285,6 +313,14 @@ public class Game {
     }
   }
 
+  public void updateTakenCheckers(int pCheckerType) {
+    if(pCheckerType%2 == 0) {
+      this.updateTakenRedCheckers();
+    } else {
+      this.updateTakenWhiteCheckers();
+    }
+  }
+
   public boolean virtualMovePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
@@ -299,6 +335,7 @@ public class Game {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
+      this.updateTakenCheckers(capturedChecker.getType());
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.checkers = this.getCheckers();
       if(pChecker.getType() %2 == this.getPlayerTurn() %2)
@@ -334,9 +371,11 @@ public class Game {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn, saved) VALUES (:playerCount, :playerTurn, :saved)", true)
+      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn, takenredcheckers, takenwhitecheckers, saved) VALUES (:playerCount, :playerTurn, :takenRedCheckers, :takenWhiteCheckers, :saved)", true)
         .addParameter("playerCount", this.playerCount)
         .addParameter("playerTurn", this.playerTurn)
+        .addParameter("takenRedCheckers", this.takenRedCheckers)
+        .addParameter("takenWhiteCheckers", this.takenWhiteCheckers)
         .addParameter("saved", this.saved)
         .executeUpdate()
         .getKey();

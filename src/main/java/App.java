@@ -156,11 +156,21 @@ public class App {
 
   public static Map<String,Object> boardModel(Game pGame) {
     Map<String,Object> model = new HashMap<>();
+    List<Integer> takenRedCheckersList = new ArrayList<>();
+    List<Integer> takenWhiteCheckersList = new ArrayList<>();
+    for (int i = 0; i < pGame.getTakenRedCheckers(); i++) {
+      takenRedCheckersList.add(i);
+    }
+    for (int j = 0; j < pGame.getTakenWhiteCheckers(); j++) {
+      takenWhiteCheckersList.add(j);
+    }
     model.put("playerTurn", pGame.getPlayerTurn());
     model.put("checkers", pGame.getCheckers());
     model.put("game", pGame);
     model.put("rows", board);
     model.put("columns", board);
+    model.put("redsTaken", takenRedCheckersList);
+    model.put("whitesTaken", takenWhiteCheckersList);
     model.put("gameOver", pGame.gameIsOver());
     model.put("loggedInStatus", User.loggedIn);
     model.put("loggedInUser", User.loggedInUser);
