@@ -8,6 +8,7 @@ public class EasyAI {
   private Game currentGame;
   private String name;
   private int id;
+  public MoveValue testingVariable;
 
   private class MoveValue{
     public float moveValue;
@@ -28,6 +29,8 @@ public class EasyAI {
   public EasyAI(String pname, int pboardId) {
     this.name = pname;
     this.currentGame = Game.findById(pboardId);
+    this.testingVariable = new MoveValue();
+    this.testingVariable.row = 0;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -85,6 +88,7 @@ public class EasyAI {
   public void recursiveMoveEvaluation(List<Checker> pcheckers, int pmoveCount, MoveValue paiMoveValue, MoveValue popponentMoveValue) {
     if(pmoveCount > 0) {
       List<Checker> originalCheckers = this.copyCheckers(pcheckers);
+      this.currentGame.setCheckersList(originalCheckers);
       for (int k = 0; k < pcheckers.size(); k++) {
         Checker currentChecker = originalCheckers.get(k);
         if(currentChecker.getType() % 2 == this.currentGame.getPlayerTurn() % 2) {
@@ -101,6 +105,7 @@ public class EasyAI {
         popponentMoveValue.moveValue = this.evaluateMove(pcheckers);
       if (this.evaluateMove(pcheckers) > paiMoveValue.moveValue)
         paiMoveValue.moveValue = this.evaluateMove(pcheckers);
+      System.out.println(testingVariable.row++);
     }
   }
 
@@ -113,10 +118,10 @@ public class EasyAI {
       Checker currentChecker = checkers.get(k);
       if(currentChecker.getType() % 2 == this.currentGame.getPlayerTurn() % 2) {
         if(this.currentGame.generalMoveIsAvailable(currentChecker)) {
-          this.generateMoves(1, checkers, k, aiMoveValue, opponentMoveValue, 4);
+          this.generateMoves(1, checkers, k, aiMoveValue, opponentMoveValue, 5);
         }
         if(this.currentGame.generalCaptureIsAvailable(currentChecker)) {
-          this.generateMoves(2, checkers, k, aiMoveValue, opponentMoveValue, 4);
+          this.generateMoves(2, checkers, k, aiMoveValue, opponentMoveValue, 5);
         }
       }
     }
@@ -127,7 +132,6 @@ public class EasyAI {
       Checker chosenChecker = this.currentGame.getCheckerInSpace(aiMoveValue.checkerToMove.getRowPosition(), aiMoveValue.checkerToMove.getColumnPosition());
       this.currentGame.movePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
       this.currentGame.capturePiece(chosenChecker, aiMoveValue.row, aiMoveValue.column);
-      System.out.println("Precise");
     }
     if(this.currentGame.getPlayerTurn() == 1) {
       this.currentGame.updatePlayerTurn();
@@ -139,6 +143,7 @@ public class EasyAI {
     this.currentGame.populateCheckers();
     List<Checker> pcheckers = this.currentGame.getCheckersList();
     boolean moveIsNotGenerated = true;
+    System.out.println("random");
     while (moveIsNotGenerated) {
       int randRow = rand.nextInt(8);
       int randCol = rand.nextInt(8);
@@ -159,7 +164,6 @@ public class EasyAI {
               if (this.currentGame.specificMoveIsValid(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j)) {
                 this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
                 moveIsNotGenerated = false;
-                System.out.println("Random");
                 return true;
               }
             }
