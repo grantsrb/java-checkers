@@ -1,0 +1,13 @@
+<h1>LOGGED IN</h1>
+
+<h2>$loggedInUser.getUsername()'s Account</h2>
+#if($loggedInUser.getGames().size() < 1)
+  <h4>You have no saved games!</h4>
+#else
+  <h4>Saved Games:</h4>
+  <ul>
+    #foreach($game in $loggedInUser.getGames())
+      <li>Game: ID # $game.getId()</li>
+    #end
+  </ul>
+#end

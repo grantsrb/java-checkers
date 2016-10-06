@@ -37,7 +37,7 @@ public class App {
       Map<String, Object> model = boardModel(game);
       for (int i = 0; i < board.length ; i++ ) {
         for (int j = 0; j < board.length ; j++ ) {
-          if(game.specificMoveIsValid(checker, i, j) && checker.getType() == game.getPlayerTurn() || game.specificCaptureIsValid(checker, i, j)) {
+          if(game.specificMoveIsValid(checker, i, j) && checker.getType() % 2 == game.getPlayerTurn() % 2 || game.specificCaptureIsValid(checker, i, j)) {
             legalRows.add(i);
             legalColumns.add(j);
             indexes.add(legalRows.size()-1);
@@ -81,11 +81,13 @@ public class App {
         User.loggedInUser = newUser;
         model.put("loggedInStatus", User.loggedIn);
         model.put("loggedInUser", User.loggedInUser);
-        model.put("template", "templates/index.vtl");
+        model.put("template", "templates/user-page.vtl");
         return new ModelAndView(model, layout);
-      } catch(RuntimeException exception) { }
-      model.put("invalidLogin", true);
-      return new ModelAndView(model, "templates/login.vtl");
+      } catch(RuntimeException exception) {
+        model.put("invalidLogin", true);
+        model.put("template", "templates/login.vtl");
+        return new ModelAndView(model, layout);
+      }
     },new VelocityTemplateEngine());
 
     post("/new-account", (request,response) -> {
@@ -116,6 +118,13 @@ public class App {
       model.put("template", "templates/index.vtl");
       return new ModelAndView(model, layout);
     },new VelocityTemplateEngine());
+
+    // get("/checkers/:userid/account", (request, response) -> {
+    //   Map<String,Object> model = new HashMap<>();
+    //   User user = User.find(request.queryParams("userid"));
+    //   model.put("user", user);
+    //   model.put("games", )
+    // }, new VelocityTemplateEngine());
 
   }
 
