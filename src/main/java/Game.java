@@ -110,6 +110,10 @@ public class Game {
     }
   }
 
+  public void setPlayerTurn(int pplayer) {
+    this.playerTurn = pplayer;
+  }
+
   public void addChecker(Checker pChecker) { // made for testing
     this.checkers.add(pChecker);
   }
@@ -280,7 +284,7 @@ public class Game {
   public boolean virtualMovePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
-      this.updatePlayerTurn();
+      this.setPlayerTurn((this.playerTurn + 1)%2);
       return true;
     }
     else
@@ -293,7 +297,7 @@ public class Game {
       capturedChecker.delete();
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.checkers = this.getCheckers();
-      if(pChecker.getType() == this.getPlayerTurn() || pChecker.getType() == this.getPlayerTurn() + 2)
+      if(pChecker.getType() %2 == this.getPlayerTurn() %2)
         this.updatePlayerTurn();
       if(!this.generalCaptureIsAvailable(pChecker)) {
         return false;
@@ -306,11 +310,13 @@ public class Game {
   public boolean virtualCapturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
-      capturedChecker.delete();
+      for(int i = 0; i < this.checkers.size(); i++) {
+        if (capturedChecker.getId() == this.checkers.get(i).getId())
+          this.checkers.remove(i);
+      }
       pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
-      this.checkers = this.getCheckers();
-      if(pChecker.getType() == this.getPlayerTurn())
-        this.updatePlayerTurn();
+      if(pChecker.getType() %2 == this.getPlayerTurn() %2)
+        this.setPlayerTurn((this.playerTurn + 1)%2);
       if(!this.generalCaptureIsAvailable(pChecker)) {
         return false;
       } else
