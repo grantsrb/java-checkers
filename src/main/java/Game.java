@@ -6,6 +6,8 @@ import java.lang.Math;
 public class Game {
   private int playerCount;
   private int playerTurn;
+  private int takenRedCheckers;
+  private int takenWhiteCheckers;
   private boolean saved;
   private List<Checker> checkers = new ArrayList<>();
   private int id;
@@ -14,6 +16,8 @@ public class Game {
     this.playerCount = pPlayerCount;
     this.playerTurn = 2;
     this.saved = false;
+    this.takenRedCheckers = 0;
+    this.takenWhiteCheckers = 0;
     this.save();
     for (int i = 0; i < 8; i++) {
       for(int j = (i+1)%2; j < 8; j+=2) {
