@@ -81,9 +81,9 @@ public class EasyAI {
   }
 
   public void generateMove(List<Checker> pcheckers) {
-    int maxEvaluationRow = 0;
+    int maxEvaluationRow = 3;
     int maxEvaluationColumn = 0;
-    Checker maxEvaluationChecker = this.copyChecker(pcheckers.get(0));
+    Checker maxEvaluationChecker = this.currentGame.getCheckerInSpace(2,1);
     int evaluation = 0;
     int evaluationRow = 0;
     int evaluationColumn = 0;
@@ -108,6 +108,10 @@ public class EasyAI {
                 maxEvaluationRow = evaluationRow;
                 maxEvaluationColumn = evaluationColumn;
                 maxEvaluationChecker = pcheckers.get(k);
+                System.out.println("Hey");
+                System.out.println(maxEvaluationChecker.getRowPosition() + " " + maxEvaluationChecker.getColumnPosition());
+                System.out.println(maxEvaluationRow + " " + maxEvaluationColumn);
+                System.out.println("Ho");
               }
               originalCheckers = this.copyCheckers(pcheckers);
               currentChecker = originalCheckers.get(k);
@@ -124,6 +128,7 @@ public class EasyAI {
             if(success)
               this.recursiveMoveEvaluation(originalCheckers, 4, aiMoveValue, opponentMoveValue);
             if ((aiMoveValue.moveValue - opponentMoveValue.moveValue) > maxDifference) {
+              System.out.println("Yo");
               maxDifference = aiMoveValue.moveValue - opponentMoveValue.moveValue;
               maxEvaluationRow = evaluationRow;
               maxEvaluationColumn = evaluationColumn;
@@ -135,9 +140,13 @@ public class EasyAI {
         }
       }
     }
+    System.out.println("Fey");
+    System.out.println(maxEvaluationChecker.getRowPosition() + " " + maxEvaluationChecker.getColumnPosition());
+    System.out.println(maxEvaluationRow + " " + maxEvaluationColumn);
+    System.out.println("Fo");
     this.currentGame.movePiece(maxEvaluationChecker, maxEvaluationRow, maxEvaluationColumn);
     this.currentGame.capturePiece(maxEvaluationChecker, maxEvaluationRow, maxEvaluationColumn);
-    if(this.currentGame.getPlayerTurn() != 1) {
+    if(this.currentGame.getPlayerTurn() == 1) {
       this.currentGame.updatePlayerTurn();
     }
   }
@@ -155,9 +164,33 @@ public class EasyAI {
     return aiCheckerCount/playerCheckerCount;
   }
 
+  public float evaluateCentralPositionRatio(List<Checker> pcheckers) {
+    float aiCenterPieces = 0f;
+    float playerCenterPieces = 0f;
+    for(int i = 0; i < pcheckers.size(); i++) {
+      Checker checker = pcheckers.get(i);
+      if(checker.getRowPosition() >= 2 &&  checker.getRowPosition() <= 5 && checker.getColumnPosition() >= 2 &&  checker.getColumnPosition() <= 5 ) {
+        if(checker.getType() % 2 == 1) {
+          if(checker.getRowPosition() >= 3 &&  checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 &&  checker.getColumnPosition() <= 4)
+            aiCenterPieces += 2;
+          else
+            aiCenterPieces++;
+        } else {
+          if(checker.getRowPosition() >= 3 &&  checker.getRowPosition() <= 4 && checker.getColumnPosition() >= 3 &&  checker.getColumnPosition() <= 4)
+            playerCenterPieces += 2;
+          else
+            playerCenterPieces++;
+        }
+
+      }
+    }
+    return aiCenterPieces/playerCenterPieces;
+  }
+
   public float evaluateMove(List<Checker> pcheckers) {
     float pieceRatio = this.evaluatePieceRatio(pcheckers);
-    float moveRating = 100*pieceRatio;
+    float centerPieceRatio = this.evaluateCentralPositionRatio(pcheckers);
+    float moveRating = 100*pieceRatio + 30*centerPieceRatio;
     return moveRating;
   }
 

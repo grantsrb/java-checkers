@@ -21,10 +21,7 @@ public class EasyAITest {
   @Test
   public void generateMove_generatesMove_true() {
     List<Checker> gameCheckers = testGame.getCheckers();
-    for(int i = 0; i < gameCheckers.size(); i++) {
-      System.out.println(gameCheckers.get(i).getRowPosition() + " " + gameCheckers.get(i).getColumnPosition());
-    }
-    testAI.generateMove(testGame.getCheckers());
+    testAI.generateMove(gameCheckers);
     for(int i = 0; i < gameCheckers.size(); i++) {
       System.out.println(gameCheckers.get(i).getRowPosition() + " " + gameCheckers.get(i).getColumnPosition());
     }
