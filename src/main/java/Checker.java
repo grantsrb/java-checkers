@@ -95,6 +95,17 @@ public class Checker {
     }
   }
 
+  public void virtualUpdatePosition(int rowPosition, int columnPosition) {
+    this.rowPosition = rowPosition;
+    this.columnPosition = columnPosition;
+    if(this.type == 1 && this.rowPosition == 7) {
+      this.type = 3;
+    }
+    if(this.type == 2 && this.rowPosition == 0) {
+      this.type = 4;
+    }
+  }
+
   @Override
   public boolean equals(Object otherChecker) {
     if (!(otherChecker instanceof Checker)) {

@@ -71,6 +71,10 @@ public class Game {
     this.checkers = this.getCheckers();
   }
 
+  public void setCheckersList(List<Checker> plist) {
+    this.checkers = plist;
+  }
+
   public List<Checker> getCheckers() {
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery("SELECT * FROM checkers WHERE gameId=:gameId")
@@ -253,11 +257,37 @@ public class Game {
     }
   }
 
+  public boolean virtualMovePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
+      pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
+      this.updatePlayerTurn();
+      return true;
+    }
+    else
+      return false;
+  }
+
   public boolean capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
+      this.checkers = this.getCheckers();
+      if(pChecker.getType() == this.getPlayerTurn())
+        this.updatePlayerTurn();
+      if(!this.generalCaptureIsAvailable(pChecker)) {
+        return false;
+      } else
+        return true;
+    }
+    return false;
+  }
+
+  public boolean virtualCapturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+    if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
+      Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
+      capturedChecker.delete();
+      pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.checkers = this.getCheckers();
       if(pChecker.getType() == this.getPlayerTurn())
         this.updatePlayerTurn();
