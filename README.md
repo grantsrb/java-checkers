@@ -36,9 +36,6 @@ This webpage allows users to play a game of checkers. If the user creates an acc
   * Confirm the database has been restored correctly:
     * Connect to wildlife_tracker database: `# \c checkers;`
     * Print out database tables: `# \dt;`
-    <br>
-    <!-- TODO add all table names -->
-    NOTE: You should see `animals` and `sightings` tables in the `wildlife_tracker` database,
 * Back in your third terminal window:
   * Run the app: `$ gradle run`
 * In the browser of your choosing, navigate to "localhost:4567" (tested in Chrome).
