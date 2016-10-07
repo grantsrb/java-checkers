@@ -303,13 +303,13 @@ public class Game {
   ///////////////////////////////////////////////////////////////////////////
   // gamePlay Methods
 
-  public boolean movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public int movePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.updatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.updatePlayerTurn();
-      return true;
+      return 1;
     } else {
-      return false;
+      return 0;
     }
   }
 
@@ -321,18 +321,19 @@ public class Game {
     }
   }
 
-  public boolean virtualMovePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public int virtualMovePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificMoveIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       pChecker.virtualUpdatePosition(pSpecifiedRow, pSpecifiedColumn);
       this.setPlayerTurn((this.playerTurn + 1)%2);
-      return true;
+      return 1;
     }
     else
-      return false;
+      return 0;
   }
 
-  public boolean capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public int capturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
+      System.out.println("capture");
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       capturedChecker.delete();
       this.updateTakenCheckers(capturedChecker.getType());
@@ -341,14 +342,14 @@ public class Game {
       if(pChecker.getType() %2 == this.getPlayerTurn() %2)
         this.updatePlayerTurn();
       if(!this.generalCaptureIsAvailable(pChecker)) {
-        return false;
+        return 1;
       } else
-        return true;
+        return 2;
     }
-    return false;
+    return 0;
   }
 
-  public boolean virtualCapturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
+  public int virtualCapturePiece(Checker pChecker, int pSpecifiedRow, int pSpecifiedColumn) {
     if(this.specificCaptureIsValid(pChecker, pSpecifiedRow, pSpecifiedColumn)) {
       Checker capturedChecker = this.getAdjacentOpponentChecker(pChecker, pSpecifiedRow, pSpecifiedColumn);
       for(int i = 0; i < this.checkers.size(); i++) {
@@ -359,11 +360,11 @@ public class Game {
       if(pChecker.getType() %2 == this.getPlayerTurn() %2)
         this.setPlayerTurn((this.playerTurn + 1)%2);
       if(!this.generalCaptureIsAvailable(pChecker)) {
-        return false;
+        return 1;
       } else
-        return true;
+        return 2;
     }
-    return false;
+    return 0;
   }
 
   /////////////////////////////////////////////////////////////////////////////

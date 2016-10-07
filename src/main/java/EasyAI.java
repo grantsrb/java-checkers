@@ -41,9 +41,6 @@ public class EasyAI {
     }
   }
 
-
-
-
   public EasyAI(int pboardId) {
     this.currentGame = Game.findById(pboardId);
   }
@@ -86,13 +83,13 @@ public class EasyAI {
     Checker currentChecker = originalCheckers.get(pcheckerIndex);
     for (int i = -range; i <= range; i+=2*range) {
       for (int j = -range; j <= range; j+=2*range) {
-        boolean success;
+        int success;
         if(range == 1) {
           success = this.currentGame.virtualMovePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
         } else {
           success = this.currentGame.virtualCapturePiece(currentChecker, currentChecker.getRowPosition()+i, currentChecker.getColumnPosition()+j);
         }
-        if(success) {
+        if(success > 0) {
           this.recursiveMoveEvaluation(originalCheckers, pmoveCount-1, paiMoveValue, popponentMoveValue);
         }
         if (pmoveCount == LOOP_COUNT && (paiMoveValue.moveValue - popponentMoveValue.moveValue) > paiMoveValue.valueDifference && pcheckers.get(pcheckerIndex).getType() % 2 == 1) {
@@ -179,7 +176,6 @@ public class EasyAI {
 
   public boolean generateRandomMove() {
     Random rand = new Random();
-    List<Checker> pcheckers = this.currentGame.getCheckersList();
     boolean moveIsNotGenerated = true;
     while (moveIsNotGenerated) {
       int randRow = rand.nextInt(8);
@@ -189,8 +185,8 @@ public class EasyAI {
         if(this.currentGame.generalCaptureIsAvailable(checker)) {
           for (int i = -2; i <= 2; i+=4) {
             for (int j = -2; j <= 2; j+=4) {
-              boolean success = this.currentGame.capturePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
-              if (success) {
+              int success = this.currentGame.capturePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
+              if (success > 0) {
                 return true;
               }
             }
@@ -198,8 +194,8 @@ public class EasyAI {
         } else if (this.currentGame.generalMoveIsAvailable(checker)) {
           for (int i = -1; i <= 1; i+=2) {
             for (int j = -1; j <= 1; j+=2) {
-              boolean success = this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
-              if(success) {
+              int success = this.currentGame.movePiece(checker, checker.getRowPosition()+i, checker.getColumnPosition()+j);
+              if(success > 0) {
                 return true;
               }
             }
@@ -277,10 +273,6 @@ public class EasyAI {
 
   /////////////////////////////////////////////////////////////////////////////
   /// get and set Methods
-
-  public int getId() {
-    return this.id;
-  }
 
   public Game getCurrentGame() {
     return this.currentGame;

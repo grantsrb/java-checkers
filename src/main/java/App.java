@@ -69,9 +69,9 @@ public class App {
       int column = position % 10;
       int row = position / 10;
       game.movePiece(checker, row, column);
-      boolean doubleJumpAvailable = game.capturePiece(checker, row, column);
+      int doubleJumpAvailable = game.capturePiece(checker, row, column);
       Map<String, Object> model = boardModel(game);
-      if (doubleJumpAvailable && game.getPlayerCount() == 2) {
+      if (doubleJumpAvailable == 2 && game.getPlayerCount() == 2) {
         model.put("currentChecker", checker);
       } else if(game.getPlayerCount() == 1){
         EasyAI ai = new EasyAI(game.getId());

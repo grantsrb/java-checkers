@@ -36,6 +36,10 @@ public class Checker {
     return this.id;
   }
 
+  public void initializeId(int id) {
+    this.id = id;
+  }
+
   public void save() {
     try(Connection con = DB.sql2o.open()) {
       String sql = "INSERT INTO checkers (type, rowPosition, columnPosition, gameId) VALUES (:type, :rowPosition, :columnPosition, :gameId)";
