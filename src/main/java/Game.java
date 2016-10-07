@@ -8,12 +8,14 @@ public class Game {
   private int playerTurn;
   private int takenRedCheckers;
   private int takenWhiteCheckers;
+  private int aiType;
   private boolean saved;
   private List<Checker> checkers = new ArrayList<>();
   private int id;
 
-  public Game(int pPlayerCount) {
+  public Game(int pPlayerCount, int paiType) {
     this.playerCount = pPlayerCount;
+    this.aiType = paiType;
     this.playerTurn = 2;
     this.saved = false;
     this.takenRedCheckers = 0;
@@ -39,6 +41,10 @@ public class Game {
 
   public int getId() {
     return this.id;
+  }
+
+  public int getAiType() {
+    return this.aiType;
   }
 
   public int getPlayerCount() {
@@ -372,11 +378,12 @@ public class Game {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn, takenredcheckers, takenwhitecheckers, saved) VALUES (:playerCount, :playerTurn, :takenRedCheckers, :takenWhiteCheckers, :saved)", true)
+      this.id = (int) con.createQuery("INSERT INTO games (playerCount, playerTurn, takenredcheckers, takenwhitecheckers, aiType, saved) VALUES (:playerCount, :playerTurn, :takenRedCheckers, :takenWhiteCheckers, :aiType, :saved)", true)
         .addParameter("playerCount", this.playerCount)
         .addParameter("playerTurn", this.playerTurn)
         .addParameter("takenRedCheckers", this.takenRedCheckers)
         .addParameter("takenWhiteCheckers", this.takenWhiteCheckers)
+        .addParameter("aiType", this.aiType)
         .addParameter("saved", this.saved)
         .executeUpdate()
         .getKey();

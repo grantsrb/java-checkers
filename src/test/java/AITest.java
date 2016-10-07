@@ -12,9 +12,9 @@ public class AITest {
 
   @Before
   public void initialize() {
-    testGame = new Game(1);
+    testGame = new Game(1,2);
     testGame.updatePlayerTurn();
-    testAI = new AI(testGame);
+    testAI = new AI(testGame.getId());
     testChecker = new Checker(2,3,2,testGame.getId());
     testChecker.save();
     testAI.getCurrentGame().populateCheckers();

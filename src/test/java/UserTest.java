@@ -140,14 +140,4 @@ public class UserTest {
     assertFalse(User.userAlreadyExists("sandro"));
   }
 
-  // @Test
-  // public void getGames_returnsAllGames_true() {
-  //   firstUser.save();
-  //   Game game1 = new Game(2);
-  //   game1.save();
-  //   Game game2 = new Game(2);
-  //   game2.save();
-  //   assertTrue(firstUser.getGames().get(0).equals(game1));
-  //   assertTrue(firstUser.getGames().get(1).equals(game2));
-  // }
 }

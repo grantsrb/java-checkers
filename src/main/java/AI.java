@@ -10,8 +10,8 @@ public class AI {
 
   public static final int AI_TEAM = 1;
 
-  public AI(Game game) {
-    this.currentGame = game;
+  public AI(int gameId) {
+    this.currentGame = Game.findById(gameId);
   }
 
   public Game getCurrentGame() {

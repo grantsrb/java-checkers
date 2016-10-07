@@ -12,7 +12,7 @@ public class GameTest {
   @Before
   public void initialize() {
     testChecker = new Checker(1,0,1,1);
-    testGame = new Game(1);
+    testGame = new Game(1,1);
   }
 
   @Rule
@@ -35,7 +35,7 @@ public class GameTest {
 
   @Test
   public void findById_returnsInstanceOfGameById_Game() {
-    Game testGame2 = new Game(2);
+    Game testGame2 = new Game(2,1);
     Game object1FoundById = Game.findById(testGame.getId());
     Game object2FoundById = Game.findById(testGame2.getId());
     assertTrue(testGame.equals(object1FoundById));
@@ -44,7 +44,7 @@ public class GameTest {
 
   @Test
   public void all_returnsAllInstancesOfGame_ArrayList() {
-    Game testGame2 = new Game(2);
+    Game testGame2 = new Game(2,1);
     Game object1FoundByAll = Game.all().get(0);
     Game object2FoundByAll = Game.all().get(1);
     assertTrue(testGame.equals(object1FoundByAll));
@@ -193,9 +193,9 @@ public class GameTest {
   public void save_savesGameIntoUsersGamesJoinTable_true() {
     User testUser = new User("cgrahams", "1234gogo");
     testUser.save();
-    Game firstGame = new Game(2);
+    Game firstGame = new Game(2,1);
     firstGame.attachUser(testUser.getId());
-    Game secondGame = new Game(2);
+    Game secondGame = new Game(2,1);
     secondGame.attachUser(testUser.getId());
     assertTrue(testUser.getGames().get(0).equals(firstGame));
     assertTrue(testUser.getGames().get(1).equals(secondGame));
@@ -205,8 +205,8 @@ public class GameTest {
   public void deleteUnsaved_deletesAllUnassignedGames_true() {
     User testUser = new User("cgrahams", "1234gogo");
     testUser.save();
-    Game firstGame = new Game(2);
-    Game secondGame = new Game(2);
+    Game firstGame = new Game(2,1);
+    Game secondGame = new Game(2,1);
     secondGame.attachUser(testUser.getId());
     Game.deleteUnsaved();
     assertEquals(Game.all().get(0).getId(), secondGame.getId());

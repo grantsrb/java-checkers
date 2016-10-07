@@ -23,9 +23,11 @@ public class App {
     }, new VelocityTemplateEngine());
 
     post("/game/new", (request, response) -> {
-      int players = Integer.parseInt(request.queryParams("players"));
+      int rawInput = Integer.parseInt(request.queryParams("players"));
+      int players = rawInput/10;
+      int aiType = rawInput%10;
       Game.deleteUnsaved();
-      Game newGame = new Game(players);
+      Game newGame = new Game(players,aiType);
       return new ModelAndView(boardModel(newGame), layout);
     }, new VelocityTemplateEngine());
 
@@ -73,8 +75,12 @@ public class App {
       Map<String, Object> model = boardModel(game);
       if (doubleJumpAvailable == 2 && game.getPlayerCount() == 2) {
         model.put("currentChecker", checker);
-      } else if(game.getPlayerCount() == 1){
+      } else if(game.getPlayerCount() == 1 && game.getAiType() == 1){
         EasyAI ai = new EasyAI(game.getId());
+        ai.move();
+        model = boardModel(ai.getCurrentGame());
+      } else if(game.getPlayerCount() == 1 && game.getAiType() == 2){
+        AI ai = new AI(game.getId());
         ai.move();
         model = boardModel(ai.getCurrentGame());
       }
