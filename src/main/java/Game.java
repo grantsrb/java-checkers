@@ -295,7 +295,7 @@ public class Game {
 
   public boolean gameIsOver() {
     for(Checker checker : this.checkers) {
-      if(checker.getType() == this.playerTurn || 2 == Math.abs(checker.getType() - this.playerTurn)) {
+      if(checker.getType()%2 == this.getPlayerTurn()%2) {
         if (this.generalMoveIsAvailable(checker)) {
           return false;
         } else if (this.generalCaptureIsAvailable(checker)) {

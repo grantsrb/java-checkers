@@ -11,6 +11,9 @@
     <div class="container" id="layout-container">
       <div class="jumbotron">
         <h1>CHECK YRSELF</h1>
+        #if($gameOver)
+          <h1 id="gameOver">player$playerTurn Wins</h1>
+        #end
       </div>
       <div class="row">
         <div class="col-md-4 col-md-offset-4" id="nav-buttons">
