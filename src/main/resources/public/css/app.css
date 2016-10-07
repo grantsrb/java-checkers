@@ -1,3 +1,7 @@
+/**********
+global-page
+***********/
+
 body {
   background: #0074D9; /* For browsers that do not support gradients */
   background: -webkit-linear-gradient(#0074D9, #ccf2ff); /* For Safari 5.1 to 6.0 */
@@ -6,7 +10,7 @@ body {
   background: linear-gradient(#0074D9, #ccf2ff); /* Standard syntax (must be last) */
   background-size: cover;
   background-repeat: no-repeat;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'VT323', monospace;
   padding-bottom: 5%;
 }
 
@@ -14,6 +18,62 @@ body {
   padding: 2% 0;
   background-color: #DDDDDD;
   min-height: 1200px;
+}
+
+.container {
+  min-height: 100%;
+  margin-top: 10px;
+  border: solid black 2px;
+  border-radius: 20px;
+}
+
+.jumbotron {
+  text-align: center;
+  font-family: 'VT323', monospace;
+}
+
+.nav {
+  width: 100%;
+  margin-left: 17%;
+}
+
+.nav-btn {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#nav-buttons {
+  text-align: center;
+  display: block;
+}
+
+/*********
+login page
+**********/
+
+#sign-in-body {
+  margin-top: 60px;
+  max-width: 540px;
+  border: 5px solid black;
+  background-color: white;
+}
+
+.invalid {
+  text-align: center;
+  font-size: 1.5rem;
+  color: red;
+}
+
+#back-button {
+  display: inline-block;
+  float: right;
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pull-right{
+  float: right;
 }
 
 .player-buttons {
@@ -38,35 +98,13 @@ body {
   text-align: center;
 }
 
-#nav-buttons {
-  text-align: center;
-  display: block;
-}
+/********
+game-page
+*********/
 
 .save-button {
   text-align: center;
   margin-top: 15px;
-}
-
-.nav-btn {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.nav {
-  margin-left: 17%;
-}
-
-.container {
-  min-height: 100%;
-  margin-top: 10px;
-  border: solid black 2px;
-  border-radius: 20px;
-}
-
-table {
-  max-width: 100%;
-  min-height: auto;
 }
 
 #captured {
@@ -111,13 +149,3 @@ table {
 .glyphicon-education {
   font-size: 2.5em;
 }
-
-.jumbotron {
-  text-align: center;
-  font-family: 'VT323', monospace;
-}
-
-/*#logout {
-  border:none;
-  background: none;
-}*/
