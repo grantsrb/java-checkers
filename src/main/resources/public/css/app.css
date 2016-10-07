@@ -51,7 +51,7 @@ body {
 login page
 **********/
 
-#sign-in-body {
+.sign-in-body {
   margin-top: 60px;
   max-width: 540px;
   border: 5px solid black;
@@ -148,4 +148,12 @@ game-page
 
 .glyphicon-education {
   font-size: 2.5em;
+}
+
+nav {
+  text-align: center;
+}
+
+#top-login {
+  padding-bottom: 10px;
 }
