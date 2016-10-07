@@ -1,4 +1,4 @@
-<div id="sign-in-body" class="container">
+<div id="top-login" class="sign-in-body container">
   <h3>Sign In</h3>
   <form action="/login" method="post">
     <div class="form-group">
@@ -15,7 +15,8 @@
   #if($invalidLogin)
     <p><em class="invalid">Invalid login, please try again or create account</em></p>
   #end
-
+</div>
+<div class="sign-in-body container">
   <h3>Create New Account</h3>
   <form action="/new-account" method="post">
     <div class="form-group">
@@ -26,7 +27,7 @@
       <label for="create-password">Enter a password:</label>
       <input type="password" id="create-password" name="create-password" class="form-control password" required>
     </div>
-    <button type="submit" class="btn btn-success">Log In</button>
+    <button type="submit" class="btn btn-success">Create Account</button>
   </form>
 
   #if($invalidUserName)
