@@ -14,6 +14,10 @@ body {
   padding-bottom: 5%;
 }
 
+#about {
+  text-align: center;
+}
+
 #layout-container {
   padding: 2% 0;
   background-color: #DDDDDD;
