@@ -10,6 +10,10 @@ body {
   padding-bottom: 5%;
 }
 
+#about {
+  text-align: center;
+}
+
 #layout-container {
   padding: 2% 0;
   background-color: #DDDDDD;
@@ -62,11 +66,6 @@ body {
   margin-top: 10px;
   border: solid black 2px;
   border-radius: 20px;
-}
-
-table {
-  max-width: 100%;
-  min-height: auto;
 }
 
 #captured {
